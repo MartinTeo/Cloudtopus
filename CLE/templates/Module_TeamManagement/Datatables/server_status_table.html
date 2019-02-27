@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table id="webappstatus" class="display compact nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Breakdowns</th>
+                <th>MTBF</th>
+                <th>MTTR</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for details in server_status %}
+            <tr>
+                <td>{{ details.team_name }}</td>
+                <td>
+                {% if details.server_state == 'Live' %}
+                    <span class="badge badge-pill badge-success">{{ details.server_state }}</span>
+                {% elif details.server_state == 'Pending' %}
+                    <span class="badge badge-pill badge-warning">{{ details.server_state }}</span>
+                {% else %}
+                    <span class="badge badge-pill badge-danger">{{ details.server_state }}</span>
+                {% endif %}
+                </td>
+                <td>{{ details.server_type }}</td>
+                <td> {{details.breakdowns}} </td>
+                <td> {{details.mtbf}} </td>
+                <td> {{details.mttr}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+              <th>Team</th>
+              <th>Status</th>
+              <th>Type</th>
+              <th>Breakdowns</th>
+              <th>MTBF</th>
+              <th>MTTR</th>
+            </tr>
+        </tfoot>
+    </table>
+  </body>
+</html>

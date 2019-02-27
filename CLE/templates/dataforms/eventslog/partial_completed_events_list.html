@@ -1,0 +1,20 @@
+{% for event in completed_events %}
+  <tr>
+      <td>{{ event.class }}</td>
+      <td>{{ event.events_name }}</td>
+      <td>{{ event.event_run_at }}</td>
+      <td> Completed </td>
+    <td style="width: 250px">
+      <button type="button"
+             class="btn btn-danger btn-sm js-delete-events"
+             data-url="{% url 'ECmod:events_delete' pk=event.events_id %}">
+       <span class="glyphicon glyphicon-trash"></span> Delete
+     </button>
+    </td>
+  </tr>  
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No events</td>
+  </tr> 
+
+{% endfor %}

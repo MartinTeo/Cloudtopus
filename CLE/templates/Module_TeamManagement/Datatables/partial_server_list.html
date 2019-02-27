@@ -1,0 +1,24 @@
+{% for server in servers %}
+  <tr>
+    <td>{{ server.IP_address }}</td>
+    <td>{{ server.instanceid }}</td>
+    <td>{{ server.instanceName }}</td>
+    <td>{{ server.state }}</td>
+    <td style="width: 150px">
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-server"
+              data-url="{% url 'DMmod:server_update' pk=server.IP_address %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+      <button type="button"
+             class="btn btn-danger btn-sm js-delete-server"
+             data-url="{% url 'DMmod:server_delete' pk=server.IP_address %}">
+       <span class="glyphicon glyphicon-trash"></span> Delete
+     </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No server</td>
+  </tr>
+{% endfor %}

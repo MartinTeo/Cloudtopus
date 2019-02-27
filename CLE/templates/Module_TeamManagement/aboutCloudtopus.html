@@ -1,0 +1,37 @@
+{% extends userTypeExtension %}
+
+    
+
+{% load staticfiles %}
+
+{% block content %}
+
+    <head>
+        <link rel="stylesheet" href="{% static 'css/aboutCloudtopus.css' %}">
+      
+    </head>
+      <br><br>
+    <div class="header">ABOUT CLOUDTOPUS</div>
+    <img src="{% static 'images/Cloudtopus-V1-Black.png' %}" alt="Cloudtopus Logo" height="200" width="400" style="display: block;margin-left: auto;margin-right: auto;">
+    <div class="col-md-9" style="display: block;margin-left: auto;margin-right: auto;">
+        <div class="card ">
+            <div class="card-header" style="display: block;margin-left: auto;margin-right: auto;">
+                <div class = "col-md-12">
+                    <h1 class="card-title bg-dark text-white" align="center" style="font-family:Montserrat;"><b> CLOUDTOPUS 1.0 </b></h1>
+                </div>
+            
+                <br>
+                <img src="{% static 'images/Cloudtopus1.0_Team.jpg' %}" alt="Cloudtopus Logo" height="400" style="display: block;margin-left: auto;margin-right: auto;">
+                <p style="text-align:justify">
+                    <br>
+                Cloudtopus was founded as a Final Year Project by a group of SMU School of Information Systems students. Cloudtopus 1.0 was built as an integration of digital monitoring tools into a single platform. 
+                Built for the the upcoming Enterprise Solutions Management module launched in 2019, the IT Operations Lab has capabilities of monitoring multiple deployments and sending disruptions.
+                With tremendous foresight and ideation, Professor Rafael J. Barros from the School of Information Systems Faculty led the team for a successful launch of Cloudtopus in 2019. 
+                </p>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

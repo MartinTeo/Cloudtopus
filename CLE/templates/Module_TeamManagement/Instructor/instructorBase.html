@@ -1,0 +1,101 @@
+{% extends 'Module_TeamManagement/dashboardbase.html' %}
+{% load staticfiles %}
+
+{% block title %}
+Instructor page
+{% endblock %}
+
+{% block sideuserprofile %}
+<div class="col-md-12">
+    <div class="cardsidebar card-user">
+        <div class="card-image">
+        </div>
+            <div class="author">
+                <img class="avatar border-gray" src="{{ request.session.user_picture }}" alt="...">
+                <h5 class="title">{{ request.session.user_name }}</h5>
+                <p class="description">Faculty</p>
+            </div>
+        <hr>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidenavBar %}
+<li class="nav-item {{ home2 }}">
+    <a class="nav-link" href="{% url 'TMmod:instHome2' %}">
+        <i class="fas fa-home"></i>
+        <p>Home</p>
+    </a>
+</li>
+
+<li class="nav-item {{ faculty_Home }}">
+    <a class="nav-link" href="{% url 'TMmod:instHome' %}">
+        <i class="fas fa-chart-pie"></i>
+        <p>Dashboard</p>
+    </a>
+</li>
+
+<div id="accordion">
+<li class="nav-item {{ faculty_Overview }}">
+    <a class="nav-link" href ="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <i class="fas fa-users"></i>
+        <span class="no-icon">Student Mgmt</span>
+    </a>
+</li>
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" aria-expanded="true" data-parent="#accordion">
+        {% for course_title,course_sectionList in request.session.courseList_updated.items %}
+            <a class="nav-link" href="{% url 'TMmod:instOverview' %}?module={{ course_sectionList.0.id }}&course_title={{ course_title }}&section_number={{ course_sectionList.0.section_number }}">
+                <p class="col-md-3 col-sm-3 col-xs-12 control-label">{{ course_title }}</p>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+<li class="nav-item {{ configureDB_course }}">
+    <a class="nav-link" href="{% url 'TMmod:uploadcsv' %}">
+      <i class="fas fa-chalkboard-teacher"></i>
+      <p>Course Mgmt</p>
+    </a>
+</li>
+
+{% for tool in request.session.configured_Tools %}
+    {% if tool == 'ITOpsLab' %}
+    <div id="accordion">
+        <li class="nav-item {{ ITOpsLabSetup }}">
+            <a class="nav-link" href ="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              <i class="fas fa-infinity"></i>
+              <span class="no-icon">IT Ops Lab</span>
+            </a>
+        </li>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" aria-expanded="true" data-parent="#accordion">
+            {% for course_title,course_sectionList in request.session.courseList_ITOpsLab.items %}
+                <a class="nav-link" href="{% url 'DMmod:itopslab_setup' %}?course_title={{ course_sectionList.0.course_title }}">
+                    <p class="col-md-3 col-sm-3 col-xs-12 control-label">{{ course_title }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% for tool in request.session.configured_Tools %}
+    {% if tool == 'Telegram' %}
+        <div id="accordion">
+            <li class="nav-item {{ faculty_telegram_Base }}">
+                <a class="nav-link" href ="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="fab fa-telegram"></i>
+                    <span class="no-icon">Telegram Mgmt</span>
+                </a>
+            </li>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" aria-expanded="true" data-parent="#accordion">
+                    {% for course_title,course_sectionList in request.session.courseList_updated.items %}
+                        <a class="nav-link" href="{% url 'CMmod:faculty_telegram_Base' %}?course_section={{ course_sectionList.0.id }}">
+                            <p class="col-md-3 col-sm-3 col-xs-12 control-label">{{ course_title }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

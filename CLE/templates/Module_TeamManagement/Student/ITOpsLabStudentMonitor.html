@@ -1,0 +1,196 @@
+{% extends 'Module_TeamManagement/Student/studentBase.html' %}
+{% load staticfiles %}
+
+{% block bootstrapContent %}
+
+<head>
+  <link rel="stylesheet" href="{% static 'css/itopsmonitor.css' %}">
+
+</head>
+
+<div class="col-md-12">
+    <img src="{% static 'images/ITOpsLab Header.png' %}" alt="Devops" width=370px height = 180px style="display: block;margin-left: auto;margin-right: auto;"><br>
+    <h2 class = "text-center"> {{ course_title }} </h2>
+    <div class= "redirect">
+        <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+            <button onclick="location.href= '{% url 'DMmod:itopslab_studeploy_standard' %}?course_title={{course_title}}';" type="button" class="btn btn-dark">Deploy</button>
+            <button onclick="location.href = '{% url 'DMmod:itopslab_stumonitor' %}?course_title={{course_title}}';" type="button" class="btn btn-dark active">Monitor</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="itopsheader">MONITOR</div>
+</div>
+
+  <div class="content">
+    <div class="container-fluid">
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <br>
+              <!--inner card one-->
+              <div class="col-md-12 row">
+
+                <div class="col-md-12">
+
+                    <!-- to remove once for loop is settled by backend -->
+                <div class="navDiv">
+                    {% for details in server_status %}
+                        <a href="/student/ITOperationsLab/monitor/?course_title={{course_title}}&server_ip={{ details.server_ip }}" role="button" class="btn btn-primary">{{ details.server_type|add:" - "|add:details.server_ip }}</a>
+                    {% endfor %}
+                </div>
+                </div>
+
+
+                <div class="col-md-6">
+                  <div class="card">
+                    {% for details in server_status %}
+                        {% if details.server_ip == server_ip %}
+                            <div class="card-header">
+                              <h5 align="center" class="card-title">{{details.server_type|add:" Server Status"}}</h5>
+                            </div>
+                            <div class="card-body">
+                              <span align="center">
+                                <p class="card-category" align="center"><img src="{% static 'images/icons8-server-64.png' %}" alt="">
+                                {% if details.server_state == 'Live' %}
+                                    <span class="badge badge-pill badge-success">{{ details.server_state }}</span>
+                                {% elif details.server_state == 'Pending' %}
+                                    <span class="badge badge-pill badge-warning">{{ details.server_state }}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-danger">{{ details.server_state }}</span>
+                                {% endif %}
+                              </span>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="card-header">
+                          <h5 align="center" class="card-title">Server Status</h5>
+                        </div>
+                        <br>
+                    {% endfor %}
+                    <div class="card-footer ">
+                      <div class="stats">
+                        <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h5 align="center" class="card-title">WebApp Status</h5>
+                    </div>
+                    <div class="card-body">
+                      <span align="center">
+
+                        {% for details in webapp_status %}
+                            {% if details.ip_address == server_ip %}
+                            <p class="card-category" align="center"><img src="{% static 'images/icons8-internet-64.png' %}" alt="">
+                             {% comment %} {{ details.team_name }} {% endcomment %}
+                                {% if details.webapp_state  == 'Live' %}
+                                    <span class="badge badge-pill badge-success">{{ details.webapp_state  }}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-danger">{{ details.webapp_state  }}</span>
+                                {% endif %}
+                                <a href="http://{{ details.ip_address }}:8000">{{ details.ip_address  }}</a>
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+
+                      </span>
+                    </div>
+                    <div class="card-footer ">
+                      <div class="stats">
+                        <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h4 align="center" class="card-title">Statistics</h4>
+                    </div>
+
+                    <div class="card-body">
+                      <span align="center">
+
+                        <div class="row">
+                        <div class="col-md-6">
+                          <div class="card">
+                            <div class="card-header">
+                              <h5 align="center" class="card-title">CPU Usage</h5>
+                            </div>
+                            <div class="card-body">
+                              <span align="center">
+                              {% include "Module_TeamManagement/Dashboard/studentMonitorCPU.html" %}
+                              </span>
+                            </div>
+                            <div class="card-footer ">
+
+                            </div>
+                          </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                          <div class="card">
+                            <div class="card-header">
+                              <h5 align="center" class="card-title">Network Packets in tracking</h5>
+                            </div>
+                            <div class="card-body">
+                              <span align="center">
+                                {% include "Module_TeamManagement/Dashboard/studentMonitorPackets.html" %}
+                              </span>
+                            </div>
+                            <div class="card-footer">
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      </span>
+                    </div>
+                    <div class="card-footer ">
+                      <div class="stats">
+                        <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+  // Add active class to the current button (highlight it)
+  $(function(){
+         pageUrl = location.href;
+         // console.log(pageUrl)
+         $('.navDiv a').each(function () {
+              link = $(this);
+              var href = link.attr("href");
+              console.log(link);
+              // console.log(link.attr("href") === pageUrl);
+              if (href === pageUrl.substring(pageUrl.length-href.length)) {
+                console.log("success");
+                console.log();
+                  link.addClass("active");
+              }
+         });
+     });
+  </script>
+
+{% include 'popupmessages/message.html' %}
+
+{% endblock %}

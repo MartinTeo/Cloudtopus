@@ -1,0 +1,28 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+
+{% block bootstrapContent %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/itopsevent.css' %}">
+ </head>
+
+<div class="col-md-12">
+    <img src="{% static 'images/ITOpsLab Header.png' %}" alt="Devops" width=370px height = 180px style="display: block;margin-left: auto;margin-right: auto;"><br>
+        <h2 class = "text-center"> {{ course_title }} </h2>
+        <div class= "redirect">
+            <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+              <button onclick="location.href= '{% url 'DMmod:itopslab_setup' %}?course_title={{course_title}}';" type="button" class="btn btn-dark" >Setup</button>
+              <button onclick="location.href = '{% url 'DMmod:itopslab_monitor' %}?course_title={{course_title}}&section_number={{first_section}}';" type="button" class="btn btn-dark">Monitor</button>
+              <button onclick="location.href = '{% url 'ECmod:itopslab_event' %}?course_title={{course_title}}';" type="button" class="btn btn-dark active">Event Management</button>
+            </div>
+        </div>
+
+        <hr>
+        <div class="itopsheader">EVENT MANAGEMENT</div>
+</div>
+
+    {% include 'Module_TeamManagement/Instructor/ITOpsEventForm.html' %}
+
+    {% csrf_token %}
+
+{% endblock %}

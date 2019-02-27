@@ -1,0 +1,17 @@
+<form method="post" action="{% url 'DMmod:server_update' course_title form.instance.pk %}" class="js-server-update-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title">Update Server</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    {% include 'dataforms/serverdetails/partial_server_form.html' %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Update server</button>
+    <input type="hidden" name="course_title" id="course_title" value={{course_title}}>
+  </div>
+</form>

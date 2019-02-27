@@ -1,0 +1,106 @@
+{% load staticfiles %}
+{% load charts_extra %} <!-- django filter from charts_extra-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Chart.js</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="myClassCharts{{forloop.counter}}" width="400" height="400"></canvas>
+    </div>
+
+     <script>
+    var ctx = document.getElementById('myClassCharts{{forloop.counter}}').getContext('2d');
+    var classLabel = [ {% for course_title,course_sectionList in courses.items %}
+                            {% for course_section in course_sectionList %}
+                                {% if course in course_section.to_string %}
+                                    '{{course_section.to_string}}' ,
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    ]
+
+    var classBadgesData = [{% for courseId in CourseTrailResults %}
+                            {% if course in courseId %}
+
+
+                      {% with CourseTrailResults|get_item:courseId as courseDict%}   // custom django filter
+                        {{ courseDict.Team_Information|getTotalClassBadges }} ,
+                      {% endwith %}
+                      {% endif %}
+                    {% endfor %}]
+    var classPointsData = [{% for courseId in CourseTrailResults %}
+                     {% if course in courseId %}
+                      {% with CourseTrailResults|get_item:courseId as courseDict%}   // custom django filter
+                        {{ courseDict.Team_Information|getTotalClassPoints }} ,
+                      {% endwith %}
+                      {% endif %}
+                    {% endfor %}]
+
+    var classData = [{% for courseId in CourseTrailResults %}
+                    {% if course in courseId %}
+                      {% with CourseTrailResults|get_item:courseId as courseDict%}   // custom django filter
+                        {{ courseDict.Students_Information|getTotalNumStudents }} ,
+                      {% endwith %}
+                    {% endif %}
+                    {% endfor %}]
+
+    // to seperate multi classes
+    var myClassCharts{{forloop.counter}} = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            datasets: [
+            {
+                label: 'Number of Students ',
+                data: classData,
+
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1,
+                hoverBorderWidth:3,
+                hoverBorderColor:'#000'
+
+            }, {
+                label: 'Total Badges',
+                data: classBadgesData,
+                type: 'line'
+            }, {
+                label: 'Total Points',
+                data: classPointsData,
+                type: 'line'
+            } ],
+            labels: classLabel,
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
+  </body>
+</html>

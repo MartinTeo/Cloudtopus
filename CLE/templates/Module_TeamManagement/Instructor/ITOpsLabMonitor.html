@@ -1,0 +1,166 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+
+{% block bootstrapContent %}
+<head>
+  <link rel="stylesheet" href="{% static 'css/itopsmonitor.css' %}">
+  <script src="https://code.jquery.com/jquery-3.3.1.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js" charset="utf-8"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js" charset="utf-8"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+</head>
+
+<div class="col-md-12">
+  <img src="{% static 'images/ITOpsLab Header.png' %}" alt="Devops" width=370px height = 180px style="display: block;margin-left: auto;margin-right: auto;"><br>
+
+  <h2 class = "text-center"> {{ course_title }} </h2>
+    <div class= "redirect">
+        <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+          <button onclick="location.href= '{% url 'DMmod:itopslab_setup' %}?course_title={{course_title}}';" type="button" class="btn btn-dark" >Setup</button>
+          <button onclick="location.href = '{% url 'DMmod:itopslab_monitor' %}?course_title={{course_title}}&section_number={{first_section}}';" type="button" class="btn btn-dark active">Monitor</button>
+          <button onclick="location.href = '{% url 'ECmod:itopslab_event' %}?course_title={{course_title}}';" type="button" class="btn btn-dark">Event Management</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="itopsheader">MONITOR</div>
+</div>
+    <ul class="navDiv">
+      <a href="/instructor/ITOperationsLab/monitor/?course_title={{course_title}}&section_number=GAll" role="button" class="btn btn-primary">ALL</a>
+      {% for course_section in course_sectionList %}
+          {% if course_section.section_number != 'G0' %}
+            <a href="/instructor/ITOperationsLab/monitor/?course_title={{course_title}}&section_number={{ course_section.section_number}}" role="button" class="btn btn-primary">{{ course_section.section_number }}</a>
+          {% endif %}
+      {% endfor %}
+    </ul>
+
+    <div class="content">
+      <div class="container-fluid">
+        <div class="content">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <br>
+                <!--inner card one-->
+                <div class="col-md-12 row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 align="center" class="card-title">Server Status</h5>
+                        <p class="card-category" align="center">24 Hours performance</p>
+                      </div>
+                      <div class="card-body">
+                        <span align="center">
+                          {% include "Module_TeamManagement/Datatables/server_status_table.html" %}
+                        </span>
+                      </div>
+                      <div class="card-footer ">
+                        <div class="stats">
+                          <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="card">
+                      <div class="card-header">
+                        <h5 align="center" class="card-title">WebApp Status</h5>
+                        <p class="card-category" align="center">24 Hours performance</p>
+                      </div>
+                      <div class="card-body">
+                        <span align="center">
+                          {% include "Module_TeamManagement/Datatables/webapp_status_table.html" %}
+                        </span>
+                      </div>
+                      <div class="card-footer ">
+                        <div class="stats">
+                          <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <span align="center">
+                <p>
+                  <hr>
+                  <h2 style= "background: #2C3E50; color: white; line-height: 1.5cm;">EVENTS LOG</h2>
+                  <hr>
+                </p>
+                {% include "dataforms/eventslog/events_list.html" %}
+                <p>
+                  <h4>Completed Log</h4>
+                </p>
+                {% include "Module_TeamManagement/Datatables/complete_log_datatable.html" %}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+{% include 'popupmessages/message.html' %}
+<script>
+// Add active class to the current button (highlight it)
+$(function(){
+       pageUrl = location.href;
+       // console.log(pageUrl)
+       $('.navDiv a').each(function () {
+            link = $(this);
+            var href = link.attr("href");
+            console.log(link);
+            // console.log(link.attr("href") === pageUrl);
+            if (href === pageUrl.substring(pageUrl.length-href.length)) {
+              console.log("success");
+              console.log();
+                link.addClass("active");
+            }
+       });
+   });
+
+
+ $(document).ready(function() {
+     // Setup - add a text input to each footer cell
+     $('#completedlog').DataTable( {
+         dom: 'Bfrtip',
+         buttons: [
+             'copy', 'csv', 'excel', 'pdf', 'print'
+         ]
+     } );
+
+     $('#serverstatus').DataTable( {
+         dom: 'Bfrtip',
+         buttons: [
+             'copy', 'csv', 'excel', 'pdf', 'print'
+         ]
+     } );
+
+     $('#webappstatus').DataTable( {
+         dom: 'Bfrtip',
+         buttons: [
+             'copy', 'csv', 'excel', 'pdf', 'print'
+         ]
+     } );
+ } );
+</script>
+
+{% endblock %}

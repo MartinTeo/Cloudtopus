@@ -1,0 +1,119 @@
+{% extends 'Module_TeamManagement/Student/studentBase.html' %}
+{% load staticfiles %}
+{% block title %}
+    {{module}} Team Information
+{% endblock %}
+
+{% block studentTeams %}
+<div class="content">
+    <div class="container-fluid">
+        {% if team != None %}
+            <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                  <div class="card-header">
+                      <h1 class="card-title bg-dark text-white" align="center">Team {{ teamno }}</h1>
+                  </div>
+                </br>
+
+                <div class="col-md-12 row">
+                {% for teammembers in team %}
+                <div class="col-md-2">
+                    <div class="card h-100">
+                        <div class="card-body">
+                        <div class="cardsidebar card-user">
+                            <div class="card-image-team">
+                            </div>
+                                <div class="author">
+                                        <img class="avatar border-gray" src="https://goo.gl/Lom4Jq" alt="...">
+                                        <h5 class="title">{{teammembers.firstname}} {{teammembers.lastname}} </h5>
+                                    <p class="emaildescription">
+                                        {{teammembers.email}}
+                                    </p>
+                                </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+          </div>
+
+
+
+        </br>
+      <div class="col-md-12 row">
+        <div class="col-md-6">
+          <div class="card">
+              <div class="card-header">
+                  <h5 align="center" class="card-title">Team Ranking</h5>
+                  <p class="card-category" align="center">24 Hours performance</p>
+              </div>
+              <div class="card-body">
+                      <span align="center">
+                              {% include "Module_TeamManagement/Dashboard/class_scoreboard.html" %}
+                      </span>
+                  </div>
+              <div class="card-footer ">
+                  <div class="stats">
+                      <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <!-- <div class="col-md-6">
+          <div class="card">
+              <div class="card-header">
+                  <h5 align="center" class="card-title">Team Drill Down</h5>
+              </div>
+              <div class="card-body">
+                      <span align="center">
+                              <div class='tableauPlaceholder' id='viz1537900165542' style='position: relative'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;fy&#47;fyp2_0&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='fyp2_0&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;fy&#47;fyp2_0&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1537900165542');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='100%';vizElement.style.maxWidth='650px';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';vizElement.style.maxHeight='887px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.maxWidth='650px';vizElement.style.height=(divElement.offsetWidth)+'px';vizElement.style.maxHeight='887px';} else { vizElement.style.width='100%';vizElement.style.maxWidth='650px';vizElement.style.height=(divElement.offsetWidth*1.77)+'px';vizElement.style.maxHeight='887px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+                      </span>
+                  </div>
+              <div class="card-footer ">
+                  <div class="stats">
+                      <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                  </div>
+              </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+</div>
+
+      {% else %}
+
+      <h1> No teams found </h1>
+        {% endif %}
+
+    </div>
+</div>
+<!-- {% if team_list == 'active' %}
+    <div class="imp_message container">
+      <p> <br> </p>
+      <h1> My Team </h1>
+    <table class="table table-striped table-bordered table-hover" id="studentdata">
+      <thead>
+          <tr>
+            <th>Section no.</th>
+            <th>Team no.</th>
+            <th>Email</th>
+            <th>First name</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for members in results %}
+            <tr>
+                <td>{{ section_number }}</td>
+                <td>{{ team_number }}</td>
+                <td>{{ members.email }}</td>
+                <td>{{ members.firstname }}</td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %} -->
+{% endblock %}
+</div>

@@ -1,0 +1,254 @@
+{% extends 'Module_TeamManagement/Student/studentBase.html' %}
+{% load staticfiles %}
+
+{% block title %}
+My Stats
+{% endblock %}
+
+{% block studentStats %}
+<div class="content">
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class=”progress”>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:50%">{{progress}}%</div>
+          </div>
+
+          <h3 align="center"> {{ past_weeks }} / 16 WEEKS </h3>
+        </div>
+      </div>
+    </div>
+    <!--Class One Card-->
+      {% for course,course_section in request.session.courseList.items %}
+      <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="card-title bg-dark text-white" align="center">{{course_section.courseDetails}}</h1>
+          </div>
+          <br>
+
+        {% if 'Telegram' in courseDetails.toolImage_list %}
+          <div class="col-md-12">
+            <div class="row">
+              <!-- FOR TOOLS USED -->
+              <div class = "col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 align="center" class="card-title">Tools used</h3>
+                      <br>
+                      <div class="row text-center" style="display: block;margin-left: auto;margin-right: auto;">
+
+                        {% if not course_section.toolImage_list %}
+                        <div class="text-center">
+                          <h6 style = "color:red"> No tools have been initialised</h6>
+                        </div>
+                        {% else %}
+                          {% for toolImage in course_section.toolImage_list %}
+                          {% if toolImage != '' %}
+                          {% with 'images/'|add:toolImage|add:" Logo.png" as toolLink %}
+                          <div class="col-md-2" style="display: block;margin-left: auto;margin-right: auto;">
+                            <img src="{% static toolLink %}" class="rounded-circle">
+                          </div>
+                          {% endwith %}
+                          {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                      <br>
+
+                      <p align="right">
+                        <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtoolStudent' %}?user=student">Initialise tools</a>
+                      </p>
+
+                    </div>
+                  </div>
+                </div>
+                <!-- FOR TELEGRAM -->
+                <div class = "col-md-6">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title text-center">Telegram</h3>
+                    </div>
+                    <div class = "card-body text-center">
+                        <a href="{{ current_telegram_chat.link }} ">
+                          <img src="{% static 'images/Telegram Logo.png' %}" alt="..." width=80px height = 80px style="display: block;margin-left: auto;margin-right: auto;" >
+                        </a>
+                    </div>
+                    <div class = "card-footer text-center">
+                        <h6><b>Join {{current_telegram_chat.type}} now!</b></h6>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+          {% else %}
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 align="center" class="card-title">Tools used</h3>
+              </div>
+              <div class = "card-body text-center">
+                <div class="col-md-12 text-center" style="margin-left:30px;">
+                  {% if not course_section.toolImage_list %}
+                  <div class="text-center">
+                      <h6 style = "color:red"> No tools have been initialised</h6>
+                      <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtoolStudent' %}?user=student">Initialise tools</a>
+                  </div>
+                  {% else %}
+                  <div class="row text-center">
+                    {% for toolImage in course_section.toolImage_list %}
+                    {% if toolImage != '' %}
+                    {% with 'images/'|add:toolImage|add:" Logo.png" as toolLink %}
+
+                    <div class="col-md-2 text-center">
+                      <img src="{% static toolLink %}" class="rounded-circle">
+                    </div>
+                    {% endwith %}
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                    <div class="card-footer text-center" style="margin-top:10px;">
+                      <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtoolStudent' %}?user=student">Add tools</a>
+                   </div>
+                  {% endif %}
+            </div>
+            </div>
+          </div>
+          </div>
+          {% endif %}
+
+          <!--Tool 1 Card-->
+        {% if "Trailhead" in course_section.toolImage_list %}  <!-- if loop for trailhead docker-->
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title text-center">Trailhead</h3>
+                <br>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <center><img src="https://png.icons8.com/dusk/50/000000/report-card.png">
+                    <h1>{{personal.points_count}}</h1>
+                    <h6>POINTS</h6>
+                  </center>
+                  <br>
+                </div>
+
+                <div class="col-md-4">
+                  <center><img src="https://png.icons8.com/dusk/40/000000/waypoint-map.png">
+                    <h1>{{personal.trail_count}}</h1>
+                    <h6>TRAILS COMPLETED</h6>
+                  </center>
+                  <br>
+                </div>
+
+                <div class="col-md-4">
+                    <center><img src="https://png.icons8.com/dusk/50/000000/prize.png">
+                      <h1>{{personal.badge_count}}</h1>
+                      <h6>BADGES</h6>
+                    </center>
+                  <br>
+                </div>
+
+              </div>
+
+              <div class="card-body">
+                <span align="center"> {% include "Module_TeamManagement/Student/trailhead.html" %} </span>
+              </div>
+
+
+
+            <!-- class ranking-->
+            <div class ="col-md-12">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="card">
+                      <div class="card-header">
+                        <h5 align="center" class="card-title">Team Ranking</h5>
+                        <p class="card-category" align="center">24 Hours performance</p>
+                      </div>
+                      <div class="card-body">
+                        <span align="center">
+                          {% include "Module_TeamManagement/Dashboard/class_scoreboard.html" %}
+                        </span>
+                      </div>
+                      <div class="card-footer ">
+                        <div class="stats">
+                          <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card"  style="height: 13cm;">
+                    <div class="card-header">
+                      <h4 align="center" class="card-title">Trailhead performance</h4>
+                      <p align="center" class="card-category">Points against Badges</p>
+                    </div>
+
+                    <div class="card-body">
+                      {% include "Module_TeamManagement/Dashboard/class_line_chart.html" %}
+                    </div>
+                    <div class="card-footer ">
+                      <div class="stats">
+                        <i class="fa fa-history"></i> Updated "{{last_updated}}"
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+              {% endif %} <!-- if loop for trailhead docker-->
+            </div>
+          </div>
+
+          <!--END Tool 1 Card-->
+
+          <!-- calendar-->
+          <!-- <div class="col-md-6">
+                    <div class="card card-tasks">
+                    <div class="googleCalendar">
+                        <iframe src="https://calendar.google.com/calendar/embed?title=Calendar&amp;height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;src=martin.teo.2016%40smu.edu.sg&amp;color=%231B887A&amp;src=en.singapore%23holiday%40group.v.calendar.google.com&amp;color=%230F4B38&amp;ctz=Asia%2FSingapore" style="border-width:0" width="600" height="600" frameborder="0" scrolling="no" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                    </div>
+                </div> -->
+          <!--end of calendar-->
+
+
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  var delay = 500;
+  $(".progress-bar").each(function(i) {
+    $(this).delay(delay * i).animate({
+      width: $(this).attr('aria-valuenow') + '%'
+    }, delay);
+
+    $(this).prop('Counter', 0).animate({
+      Counter: $(this).text()
+    }, {
+      duration: delay,
+      easing: 'swing',
+      step: function(now) {
+        $(this).text(Math.ceil(now) + '%');
+      }
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'dataforms/dataformbase.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'js/dataforms/events.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <br>
+  <h4> Pending Log </h4>
+  <table class="table" id="events-table">
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Task Name</th>
+        <th>Run At</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% include 'dataforms/eventslog/partial_events_list.html' %}
+    </tbody>
+  </table>
+  <br>
+  <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-events">
+   <div class="modal-dialog">
+     <div class="modal-content">
+     </div>
+   </div>
+
+
+
+{% endblock %}

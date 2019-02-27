@@ -1,0 +1,29 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-duallistbox.css' %}">
+  <script src="{% static 'js/jquery.bootstrap-duallistbox.js' %}"></script>
+</head>
+
+<!-- <div class="row">
+  <div class="col-md-12">
+    <form id="demoform" action="{% url 'DMmod:itopslab_monitor' %}" method="post">
+      {% csrf_token %} -->
+    <select multiple="multiple" size="10" name="account_numbers" class="demo2" title="duallistbox_demo2" id="account_numbers">
+
+    </select>
+        <!-- <br>
+      <button type="submit" class="btn btn-default btn-block">SHARE DEPLOYMENT INFO</button>
+    </form> -->
+    <script>
+      var demo2 = $('.demo2').bootstrapDualListbox({
+        nonSelectedListLabel: 'Not Shared',
+        selectedListLabel: 'Shared',
+        preserveSelectionOnMove: 'moved',
+        moveOnSelect: false,
+      });
+    </script>
+  <!-- </div>
+</div> -->
+</html>

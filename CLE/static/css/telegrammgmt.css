@@ -1,0 +1,71 @@
+input:invalid+span:after {
+    content: 'Invalid DateTime: Please input a FUTURE/ CURRENT Date Time. ';
+    color: #a80000;
+    font-family: montserrat;
+    font-size: 10px;
+    font-weight:bold;
+    background: #ffe0e0;
+    padding: 10px 10px;
+    border-left: 6px solid #a80000;
+}
+  
+.error {
+    color: #a80000;
+    background: #ffe0e0;
+    font-size: 10px;
+    padding: 10px 10px;
+    font-weight: bold;
+    border-left: 6px solid #a80000;
+}
+
+
+/*form styles*/
+#messageForm {
+    text-align: center;
+    position: relative;
+    margin-top: 30px;
+}
+
+#messageForm fieldset {
+    background: white;
+    border: 0 none;
+    border-radius: 0px;
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+
+    /*stacking fieldsets above each other*/
+    position: relative;
+}
+
+/*Hide all except first fieldset*/
+#messageForm fieldset:not(:first-of-type) {
+    display: none;
+}
+
+/*inputs*/
+#messageForm input, #msform textarea {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: montserrat;
+    color: #2C3E50;
+    font-size: 13px;
+}
+
+#messageForm input:focus, #msform textarea:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border: 1px solid #2C3E50;
+    outline-width: 0;
+    transition: All 0.5s ease-in;
+    -webkit-transition: All 0.5s ease-in;
+    -moz-transition: All 0.5s ease-in;
+    -o-transition: All 0.5s ease-in;
+}

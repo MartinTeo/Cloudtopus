@@ -1,0 +1,42 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table id="serverstatus" class="display compact nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>IP Address</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for details in webapp_status %}
+            <tr>
+                <td>{{ details.team_name }}</td>
+                <td><a href="http://{{ details.ip_address }}:8000">{{ details.ip_address }}</a></td>
+                <td>
+                {% if details.webapp_state == 'Live' %}
+                    <span class="badge badge-pill badge-success">{{ details.webapp_state  }}</span>
+                {% else %}
+                    <span class="badge badge-pill badge-danger">{{ details.webapp_state   }}</span>
+                {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+              <th>Team</th>
+              <th>IP Address</th>
+              <th>Status</th>
+            </tr>
+        </tfoot>
+    </table>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{% extends 'dataforms/dataformbase.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'js/dataforms/dp.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <table class="table" id="dp-table-student">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Git Link</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% include 'dataforms/deploymentpackage_student/partial_dp_list_student.html' %}
+    </tbody>
+  </table>
+
+  <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-dp">
+   <div class="modal-dialog">
+     <div class="modal-content">
+     </div>
+   </div>
+
+ <script>
+ $(document).ready(function() {
+ console.log("{% url 'DMmod:itopslab_studeploy_standard' %}deployment_package/?course_title={{course_title}} #dp-table-student")
+ $("#dp-table-student").load("{% url 'DMmod:itopslab_studeploy_standard' %}deployment_package/?course_title={{course_title}} #dp-table-student");
+ });
+ </script>
+{% endblock %}

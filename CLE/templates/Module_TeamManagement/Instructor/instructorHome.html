@@ -1,0 +1,225 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    My Stats
+{% endblock %}
+
+{% block facultyHome %}
+<div class="content">
+    <div class="container-fluid">
+      <!-- classes, sections, students -->
+      <div class="row">
+          <div class="col-md-12">
+              <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info massive-font" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100">{{ past_weeks }}</div>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+      <div class="col-md-4">
+          <div class="card">
+              <div class="card-header">
+                <div class="float-left mt-10 d-none d-sm-block">
+                    <img src="{% static 'images/icons8-course-64.png' %}">
+                </div>
+                  <h2 align="center" class="card-title">Courses</h2>
+                    <h2 align="center">{{course_count}}</h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="card">
+              <div class="card-header">
+                <div class="float-left mt-10 d-none d-sm-block">
+                    <img src="{% static 'images/icons8-study-64.png' %}">
+                </div>
+                  <h2 align="center" class="card-title">Sections</h2>
+                    <h2 align="center">{{section_count}}</h2>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="card">
+              <div class="card-header">
+                <div class="float-left mt-10 d-none d-sm-block">
+                    <img src="{% static 'images/icons8-students-64.png' %}">
+                </div>
+                  <h2 align="center" class="card-title">Students</h2>
+                    <h2 align="center">{{student_count}}</h2>
+              </div>
+          </div>
+      </div>
+        </div>
+      <!-- end of classes, sections, students -->
+
+            <!--Class One Card-->
+
+              {% for course, courseDetails in course_list.items %}
+              <div class="row">
+                <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-title bg-dark text-white" align="center">{{course}}</h1>
+                    </div>
+                    <br>
+
+                    <!--inner card row one-->
+                    <div class="col-md-12">
+                        <div class="row">
+                        <div class="col-md-3">
+                            <div class="card h-75">
+                                <div class="card-header">
+                                    <h3 align="center" class="card-title">Students</h3>
+                                    <h3 align="center">{{courseDetails.count}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card h-75">
+                                <div class="card-header">
+                                    <h3 align="center" class="card-title">Sections</h3>
+                                    <h3 align="center">{{courseDetails.sectionCount}}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                              <div class="card h-75">
+                                  <div class="card-header">
+                                      <h3 align="center" class="card-title">Tools used</h3>
+                                  </div>
+                                    <div class = "card-body text-center">
+                                        <div class="col-md-12 text-center" style="margin-left:30px;">
+                                            {% if not courseDetails.toolImage_list %}
+                                                <div class="text-center">
+                                                    <h6 style = "color:red"> No tools have been initialised</h6>
+                                                    <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtools' %}?user=faculty">Initialise tools</a>
+                                                </div>
+                                            {% else %}
+                                            <div class="row text-center">
+                                                {% for toolImage in courseDetails.toolImage_list %}
+                                                    {% if toolImage != '' %}
+                                                    {% with 'images/'|add:toolImage|add:" Logo.png" as toolLink %}
+                                                    <div class="col-md-2 text-center">
+                                                        <img src="{% static toolLink %}" class="rounded-circle">
+                                                    </div>
+                                                    {% endwith %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class="card-footer text-center" style="margin-top:10px;">
+                                                <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtools' %}?user=faculty">Add tools</a>
+                                            </div>
+
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+
+                                  <br>
+                              </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <!--inner card row three-->
+                    {% if 'Telegram' in courseDetails.toolImage_list %}
+                        <div class="col-md-12">
+                            <div class="row">
+                            <div class="col-md-12">
+                                <div class="card ">
+                                    <div class="card-header">
+                                        <h3 class="card-title text-center">Telegram</h3>
+                                        <span align = "center">
+                                            <br>
+                                            <img src="{% static 'images/Telegram Logo.png' %}" alt="..." width=80px height = 80px style="display: block;margin-left: auto;margin-right: auto;" >
+                                            <br>
+                                            {% for course_section,telegram_details in telegram_data.items %}
+                                            <div style = "col-md-4">
+
+                                                <h4><b>{{telegram_details.registered_count}}/{{telegram_details.total_count}}</b></h4>
+                                                <h5>Registered for <b>{{course_section}}</b></h5>
+
+                                            </div>
+                                            {% endfor %}
+
+                                            <button type="button" class="btn btn-sm" style="background-color: #0088CC; color:white; display: block;margin-left: auto;margin-right: auto;" >
+                                                <h6>Telegram Management</h6>
+                                            </button>
+
+                                            <br>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <!--end of inner card row three-->
+                    {% if "Trailhead" in courseDetails.toolImage_list %}  <!-- if loop for trailhead docker-->
+                        <div class="col-md-12">
+                            <div class = "row">
+                            <div class="col-md-6">
+                            <!-- <div class="card">
+                                <div class="card-header">
+                                        <h5 align="center" class="card-title">Section Information</h5>
+                                    <p class="card-category" align="center">Key Indicators</p>
+                                </div>
+                                <div class="card-body">
+                                    <span align="center">
+    <div class='tableauPlaceholder' id='viz1537544517595' style='position: relative;'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;FY&#47;FYP1_0&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='FYP1_0&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;FY&#47;FYP1_0&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1537544517595');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.minWidth='420px';vizElement.style.maxWidth='650px';vizElement.style.width='100%';vizElement.style.minHeight='587px';vizElement.style.maxHeight='887px';vizElement.style.height=(divElement.offsetWidth)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+                                    </span>
+                                </div>
+                                <div class="card-footer ">
+                                    <div class="stats">
+
+                                        <i class="fa fa-history"></i> Updated "{{last_updated}}"
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Section Ranking</h4>
+                                    <p class="card-category">Tracking Section Performances</p>
+                                </div>
+                                <div class="card-body">
+                                    {% include "Module_TeamManagement/Dashboard/courses_radarchart.html" %}
+                                </div>
+                                <div class="card-footer ">
+                                    <div class="stats">
+                                        <i class="fa fa-history"></i> Updated "{{last_updated}}"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} <!-- if loop for trailhead docker-->
+                        </div>
+                    </div>
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+var delay = 500;
+$(".progress-bar").each(function(i){
+    $(this).delay( delay*i ).animate( { width: $(this).attr('aria-valuenow') + '%' }, delay );
+
+    $(this).prop('Counter',0).animate({
+        Counter: $(this).text()
+    }, {
+        duration: delay,
+        easing: 'swing',
+        step: function (now) {
+            $(this).text(Math.ceil(now)+'/16 Weeks');
+        }
+    });
+});
+</script>
+
+{% endblock %}

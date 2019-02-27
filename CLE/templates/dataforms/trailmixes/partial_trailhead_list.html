@@ -1,0 +1,21 @@
+{% for trailhead in thm %}
+  <tr>
+      <td>{{ trailhead.name }}</td>
+      <td> <a href={{ trailhead.link }}> {{ trailhead.link }} </a></td>
+      <td>{{ trailhead.description }}</td>
+      <td>{{ trailhead.badges }}</td>
+      <td>{{ trailhead.course.course_title }}</td>
+    <td style="width: 250px">
+     
+      <button type="button"
+             class="btn btn-danger btn-sm js-delete-trailhead"
+             data-url="{% url 'TMmod:trailhead_delete' pk=trailhead.id %}">
+       <span class="glyphicon glyphicon-trash"></span> Delete
+     </button>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No Trailmix</td>
+  </tr>
+{% endfor %}

@@ -1,0 +1,166 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+{% load charts_extra %} <!-- django filter from charts_extra-->
+{% block classList %}
+
+
+
+<div class="content">
+  <div class="container-fluid">
+    <p> <br> </p>
+    <h1> Student Management for {{ course_section.course.course_title }}</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 align="center" class="card-title">Section</h4>
+                        {% if course_section.section_number == 'G0' %}
+                            <h1 align="center">None</h1>
+                        {% else %}
+                            <h1 align="center">{{ course_section.section_number }}</h1>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 align="center" class="card-title">Teams</h4>
+                        <h1 align="center">{{ CourseTrailResults.class.Teams_Information | length }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card ">
+                <div class="card-header ">
+                    <h4 align="center" class="card-title">Students</h4>
+                        <h1 align="center">{{ CourseTrailResults.class.Students_Information.students | length }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <div class="navDiv">
+        {% for course_section in course_sectionList %}
+            {% if course_section.section_number != 'G0' %}
+            <a href="/instructor/overview/?module={{ course_section.id }}&course_title={{ course_section.course_title }}&section_number={{ course_section.section_number}}" role="button" class="btn btn-dark">{{ course_section.section_number }}</a>
+            {% endif %}
+        {% endfor %}
+      </div>
+
+        <div class="card h-75">
+            <div class="card-header">
+                <h3 align="center" class="card-title">Tools used</h3>
+            </div>
+            <div class = "card-body">
+                <div class="row text-center" style="display: block;margin-left: auto;margin-right: auto;">
+                    {% if not course_section.learning_tools %}
+                        <div style="text-center">
+                            <h6 style = "color:red"> No tools have been initialised</h6>
+                            <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtools' %}?user=faculty">Initialise tools</a>
+                        </div>
+                    {% else %}
+                    <div class="row text-center">
+                      {% for toolImage in course_section.learning_tools|learning_tool_split %}
+                          {% if toolImage != '' %}
+                              {% with 'images/'|add:toolImage|add:" Logo.png" as toolLink %}
+                              <div class="col-md-1 text-center">
+                                  <img src="{% static toolLink %}" class="rounded-circle">
+                              </div>
+                              {% endwith %}
+                          {% endif %}
+                      {% endfor %}
+                    </div>
+
+                        <div style ="text-center">
+                            <!-- <a href="{% url 'TMmod:uploadtools' %}?user=faculty"><img id="addmore" src="https://image.flaticon.com/icons/png/512/16/16909.png" alt="..." class="rounded-circle add"></a>
+                            <h6 style ="text-center;">Add Tools</h6> -->
+                            <a class="btn btn-dark btn-sm" role="button" href="{% url 'TMmod:uploadtools' %}?user=faculty">Add tools</a>
+                        </div>
+
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+            <br>
+    {% if "Trailhead" in course_section.learning_tools %}  <!-- if loop for trailhead docker-->
+        <div class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header">
+                                <h4 class="card-title text-center">Class Trailhead Overview</h4>
+                                <a href="/celery/trailhead/refresh?course_section={{course_section.course_section_id}}" role="button" class="btn btn-success btn-sm pull-left"><i class="fas fa-refresh"></i>&ensp;Refresh NOW</a>
+                                <a href="/csv/clt_file?module={{course_section.course_section_id}}" role="button" class="btn btn-success btn-sm pull-left"><i class="fas fa-refresh"></i>&ensp;Download Log</a>
+                            </div>
+                                <!--inner card one-->
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 align="center" class="card-title">Team Ranking</h5>
+                                            <p class="card-category" align="center">24 Hours performance</p>
+                                        </div>
+                                        <div class="card-body">
+                                                <span align="center">
+                                                        {% include "Module_TeamManagement/Dashboard/class_scoreboard.html" %}
+                                                </span>
+                                            </div>
+                                        <div class="card-footer ">
+                                            <div class="stats">
+                                                <i class="fa fa-history"></i> Last Updated at "{{last_updated}}"
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 align="center" class="card-title">Trailhead performance</h4>
+                                            <p align="center" class="card-category">Points against Badges</p>
+                                        </div>
+
+                                        <div class="card-body">
+                                            {% include "Module_TeamManagement/Dashboard/class_line_chart.html" %}
+                                        </div>
+                                        <div class="card-footer ">
+                                            <div class="stats">
+                                                <i class="fa fa-history"></i> Updated "{{last_updated}}"
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                </div>
+        </div>
+    <br>
+
+    {% endif %} <!-- if loop for trailhead docker-->
+
+    {% include "Module_TeamManagement/Datatables/instructorTableview.html" %}
+
+</div>
+</div>
+
+<script>
+// Add active class to the current button (highlight it)
+$(function(){
+       pageUrl = location.href;
+       // console.log(pageUrl)
+       $('.navDiv a').each(function () {
+            link = $(this);
+            var href = link.attr("href");
+            // console.log(link.attr("href"));
+            if (href === pageUrl.substring(pageUrl.length-href.length)) {
+              // console.log("success");
+                link.addClass("active");
+            }
+       });
+   });
+</script>
+
+{% endblock %}

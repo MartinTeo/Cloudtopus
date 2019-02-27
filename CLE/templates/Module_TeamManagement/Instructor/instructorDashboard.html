@@ -1,0 +1,203 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    My Stats
+{% endblock %}
+
+{% block facultyHome %}
+<div class="content">
+    <div class="container-fluid">
+      <div class="card-header bg-dark text-white">
+        <h1>Welcome to Cloudtopus</h1>
+        <h4>Begin by selecting a module</h4>
+      </div>
+
+      <br>
+      <div class="row">
+        <div class="col-md-4">
+        <div class="card col-md-12">
+          <img class="card-img-top" src="{% static 'images/Dashboard_home.png' %}" alt="Card image">
+          <div class="card-body">
+            <h4 class="card-title">Dashboard</h4>
+            <p class="card-text">Overview of students and teams. Provides statistics of students' progression.</p>
+            <div class="text-center">
+              <button onclick="location.href = '/instructor/home/';" type="button" class="btn btn-primary">Dashboard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+      <div class="card col-md-12">
+        <img class="card-img-top" src="{% static 'images/Student_home.png' %}" alt="Card image">
+        <div class="card-body">
+          <h4 class="card-title">Student Management</h4>
+          <p class="card-text">View different sections from different courses. Contains students' invidual data.</p>
+          <div class="text-center">
+            {% if course_section_count == 1 %}
+                {% for course_title,course_sectionDetails in request.session.courseList_updated.items %}
+                    <button onclick="location.href = '{% url 'TMmod:instOverview' %}?module={{ course_sectionDetails.0.id }}&course_title={{course_title}}&section_number={{ course_sectionDetails.0.section_number }}';" type="button" class="btn btn-primary">Student Mgmt</button>
+                {% endfor %}
+            {% else %}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#studMgmtCourselist">
+                  Student Mgmt
+                </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--student management modal-->
+    <div class="modal fade" id="studMgmtCourselist">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header d-block">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title text-center">Select your course</h4>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body text-center">
+            {% for course_title,course_sectionDetails in request.session.courseList_updated.items %}
+                <a class="nav-link" href="{% url 'TMmod:instOverview' %}?module={{ course_sectionDetails.0.id }}&course_title={{ course_title }}&section_number={{ course_sectionDetails.0.section_number }}">
+                    <button type="button" class="btn btn-primary">{{ course_title }}</button>
+                </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--student management modal-->
+
+
+      <div class="col-md-4">
+      <div class="card col-md-12">
+        <img class="card-img-top" src="{% static 'images/Courses_home.png' %}" alt="Card image">
+        <div class="card-body">
+          <h4 class="card-title">Course Management</h4>
+          <p class="card-text">To setup courses based on enrolled student list, student teams and cloud learning tools. </p>
+          <div class="text-center">
+            <button onclick="location.href = '/instructor/configStudents/';" type="button" class="btn btn-primary">
+                Course Mgmt
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% for tool in request.session.configured_Tools %}
+        {% if tool == 'ITOpsLab' %}
+          <div class="col-md-4">
+          <div class="card col-md-12">
+            <img class="card-img-top" src="{% static 'images/ITops_home.png' %}" alt="Card image">
+            <div class="card-body">
+              <h4 class="card-title">IT Operations Lab</h4>
+              <p class="card-text">Monitoring of students' IT infrastructure and applications, sending of events.</p>
+              <div class="text-center">
+                {% if ITOpsLab_count == 1 %}
+                    {% for course_title,course_sectionDetails in request.session.courseList_ITOpsLab.items %}
+                        <button onclick="location.href = '{% url 'DMmod:itopslab_setup' %}?course_title={{ course_title }}';" type="button" class="btn btn-primary">IT Ops Lab</button>
+                    {% endfor %}
+                {% else %}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#itOpsLabCourselist">
+                  IT Ops Lab
+                </button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <!--ITOpsLab modal-->
+    <div class="modal fade" id="itOpsLabCourselist">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header d-block">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title text-center">Select your course</h4>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body text-center">
+            {% for course_title,course_sectionDetails in request.session.courseList_ITOpsLab.items %}
+                <a class="nav-link" href="{% url 'DMmod:itopslab_setup' %}?course_title={{ course_title }}">
+                    <button type="button" class="btn btn-primary">{{ course_title }}</button>
+                </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--ITOpsLab modal-->
+
+
+    {% for tool in request.session.configured_Tools %}
+        {% if tool == 'Telegram' %}
+          <div class="col-md-4">
+          <div class="card col-md-12">
+            <img class="card-img-top" src="{% static 'images/Telegram_home.png' %}" alt="Card image">
+            <div class="card-body">
+              <h4 class="card-title">Telegram Management</h4>
+              <p class="card-text">Create Telegram groups, broadcast channels and interact with students.</p>
+              <div class="text-center">
+                  {% if course_section_count == 1 %}
+                      {% for course_title,course_sectionDetails in request.session.courseList_updated.items %}
+                          <button onclick="location.href = '{% url 'CMmod:faculty_telegram_Base' %}?course_section={{ course_sectionDetails.0.id }}';" type="button" class="btn btn-primary">Telegram Mgmt</button>
+                      {% endfor %}
+                  {% else %}
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#telegramCourselist">
+                        Telegram Mgmt
+                      </button>
+                  {% endif %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+
+    <!--Telegram modal-->
+    <div class="modal fade" id="telegramCourselist">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header d-block">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title text-center">Select your course</h4>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body text-center">
+            {% for course_title,course_sectionDetails in request.session.courseList_updated.items %}
+                <a class="nav-link" href="{% url 'CMmod:faculty_telegram_Base' %}?course_section={{ course_sectionDetails.0.id }}">
+                    <button type="button" class="btn btn-primary">{{ course_title }}</button>
+                </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Telegram modal-->
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

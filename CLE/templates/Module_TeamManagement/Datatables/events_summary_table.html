@@ -1,0 +1,60 @@
+{% load staticfiles %}
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" charset="utf-8"></script>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/datatable.css' %}">
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table id="example3" class="display compact nowrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Team</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for details in event_log %}
+            <tr>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Team</th>
+              <th>Status</th>
+            </tr>
+        </tfoot>
+    </table>
+  </body>
+</html>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      var table = $('#example3').DataTable( {
+          responsive: true
+      } );
+  } );
+</script>

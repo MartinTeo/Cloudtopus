@@ -1,0 +1,71 @@
+{% load staticfiles %}
+{% load charts_extra %} <!-- django filter from charts_extra-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Chart.js</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" charset="utf-8"></script>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="monitorChart2" width="800" height="800"></canvas>
+    </div>
+
+     <script>
+    var ctx = document.getElementById('monitorChart2').getContext('2d');
+    var timeLabel = [ {% for timing in webapp_metric.network_metric.xValue %}
+                          '{{timing}}' ,
+                        {% endfor %}
+                    ]
+
+    var averageValue = [ {% for value in webapp_metric.network_metric.yValue %}
+                          {{value}} ,
+                        {% endfor %}
+                    ]
+
+
+    // to seperate multi classes
+    var monitorChart2 = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timeLabel,
+            datasets : [{
+                data : averageValue,
+                label: "Average",
+                borderColor: "#3e95cd",
+                fill: false
+            }]
+
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }, scaleLabel:{
+                        display: true,
+                        labelString: 'Average Network In rate '
+                    }
+                }],xAxes: [{
+                    scaleLabel: {
+                        autoSkip: false,
+                        maxRotation: 90,
+                        minRotation: 90,
+                        display: true,
+                        labelString: 'Time Intervals'
+                    }
+                }],
+            },
+            title: {
+            display: true,
+            text: 'Average Network In'
+            },
+        }
+    });
+    </script>
+  </body>
+</html>

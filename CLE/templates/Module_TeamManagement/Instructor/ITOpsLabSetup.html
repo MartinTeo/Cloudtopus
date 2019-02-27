@@ -1,0 +1,204 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+
+{% block bootstrapContent %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/itopssetup.css' %}">
+
+</head>
+
+<div class="col-md-12">
+    <img src="{% static 'images/ITOpsLab Header.png' %}" alt="Devops" width=370px height = 180px style="display: block;margin-left: auto;margin-right: auto;"><br>
+
+    <h2 class = "text-center"> {{ course_title }} </h2>
+    <div class= "redirect">
+        <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+          <button onclick="location.href= '{% url 'DMmod:itopslab_setup' %}?course_title={{course_title}}';" type="button" class="btn btn-dark active" >Setup</button>
+          <button onclick="location.href = '{% url 'DMmod:itopslab_monitor' %}?course_title={{course_title}}&section_number={{first_section}}';" type="button" class="btn btn-dark">Monitor</button>
+          <button onclick="location.href = '{% url 'ECmod:itopslab_event' %}?course_title={{course_title}}';" type="button" class="btn btn-dark">Event Management</button>
+        </div>
+    </div>
+
+    <hr>
+    <div class="itopsheader">SETUP</div>
+    <br>
+    <div id="accordion" class="panel-group col-md-9" style="display: block;margin-left: auto;margin-right: auto;">
+        <div class="panel">
+        <div class="panel-heading">
+        <h5 class="panel-title">
+            <a href="#panelBodyOne" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion">AWS Information</a>
+            </h5>
+        </div>
+
+         <!-- Request AWS Information-->
+        <div id="panelBodyOne" class="panel-collapse collapse">
+            <div class="panel-body">
+
+                <form id="awsinfo" action="{% url 'DMmod:itopslab_setup_AWSKeys' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                    {% csrf_token %}
+                    <div class="container col-md-6" style="display: block;margin-left: auto;margin-right: auto;">
+                        <label for="name" class="control-label">Account Number</label>
+                        <input class="form-control" type="text" name="account_number" id="account_number" aria-describedby="fileHelp" placeholder="Account Number">
+                        <br>
+                        <label for="name" class="control-label">AWS Access Key</label>
+                        <input class="form-control" type="text" name="access_key" id="access_key" aria-describedby="fileHelp" placeholder="AWS Access Key">
+                        <br>
+                        <label for="name" class="control-label">AWS Secret Access Key</label>
+                        <input class="form-control" type="text" name="secret_access_key" id="secret_access_key" aria-describedby="fileHelp" placeholder="AWS Secret Access Key">
+                    </div>
+                    <div class="col-md-9 form-group" style = "margin-bottom:40px;">
+                        <br>
+                        <button class="btn btn-dark pull-right" type="submit" value="Submit">Submit</button>
+                        <input type="hidden" name="course_title" id="course_title" value={{course_title}}>
+                    </div>
+                </form>
+                <div class="container col-md-9" style="display: block;margin-left: auto;margin-right: auto;">
+                    <h5><b>Submitted Account Number</b>
+                    {% if account_number != "" %}
+                        <b>Current Account Number:</b> {{account_number}}
+                    {% else %}
+                        <div class ="error">No Account Number submitted</div>
+                    {%endif %}
+
+                    <h5><b>Submitted AWS Access Key</b>
+                    {% if access_key != "" %}
+                        <b>Current AWS Access Key:</b> {{access_key}}
+                    {% else %}
+                        <div class ="error">No AWS Access Key submitted</div>
+                    {%endif %}
+
+                    <h5><b>Submitted Secret Access Key</b>
+                    {% if secret_access_key != "" %}
+                        <b>Current Secret Access Key:</b> {{secret_access_key}}
+                    {% else %}
+                        <div class ="error">No Secret Access Key submitted</div>
+                    {%endif %}
+                </div>
+
+            </div>
+        </div>
+        </div>
+
+        <div class="panel">
+        <div class="panel-heading">
+        <h5 class="panel-title">
+            <a href="#panelBodyTwo" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion">Deployment Package</a>
+            </h5>
+        </div>
+         <!-- Deployment Package Table-->
+        <div id="panelBodyTwo" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="container col-md-12" style="display: block;margin-left: auto;margin-right: auto;">
+            {% include "dataforms/deploymentpackage/dp_list.html" %}
+          </div>
+            </div>
+        </div>
+        </div>
+        <div class="panel">
+            <div class="panel-heading">
+            <h5 class="panel-title">
+                <a href="#panelBodyThree" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion">Approve & Send Image</a>
+                </h5>
+            </div>
+         <!-- Approve and Send Image Steps-->
+            <div id="panelBodyThree" class="panel-collapse collapse">
+                <div class="panel-body">
+
+                {% include 'Module_TeamManagement/Instructor/ITOpsSetupForm.html' %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% include 'popupmessages/message.html' %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js" type="text/javascript"></script>
+    <script>
+        //validations for form fields
+        $("#awsinfo").validate({
+            rules: {
+                account_number: {
+                    digits: true, //checks account number if digits have been entered
+                    required: true
+                },
+                access_key: {
+                    required: true
+                },
+                secret_access_key: {
+                    required: true
+                }
+            },
+            messages: {
+                account_number: {
+                    digits: "Please enter a valid AWS Account Number.",
+                    required: "Please enter your AWS Account Number."
+                },
+                access_key: {
+                    required: "Please enter your AWS Access Key."
+                },
+                secret_access_key: {
+                    required: "Please enter your AWS Secret Access Key."
+                }
+            }
+        });
+        // var isClosed = true;
+        // var toggle = document.getElementById("accordion-toggle");
+        // var panel = document.getElementById("panelBodyOne")
+        // console.log(toggle);
+        // toggle.addEventListener("click", function() {
+        //     toggle.classList.add("collapsed");
+        //     panel.classList.remove("in");
+        //     panel.classList.remove("show");
+        //     console.log("heyo");
+        // })
+        // $(function(){
+        // var accNum = "{{submittedAccNum}}";
+        // var accKey =  "{{submittedAccKey}}";
+        // var secKey = "{{submittedSecKey}}";
+
+        //     if (accNum!=""){
+        //         document.forms['awsinfo'].elements['email'].value = accNum;
+        //     }
+        //     if (accKey!=""){
+        //         document.forms['awsinfo'].elements['accessKey'].value = accKey;
+        //     }
+        //     if (secKey!=""){
+        //         document.forms['awsinfo'].elements['secretKey'].value = secKey;
+        //     }
+        // });
+
+        // $( document ).ready(function() {
+        // // after the page elements are all loaded, then run the script
+        // // Set the input field with unique ID #email to a value
+
+        // $("#email").val('someone@test.com');
+
+        // // Set the input field with unique ID #name
+
+        // $("#name").val('John Doe');
+
+        // });
+        $("#checkAll").click(function () {
+          $('input:checkbox').not(this).prop('checked', this.checked);
+        });
+    </script>
+
+    <!--to remove after UT!-->
+    <!-- <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
+    });
+    </script> -->
+<!--to remove after UT!-->
+
+{% endblock %}

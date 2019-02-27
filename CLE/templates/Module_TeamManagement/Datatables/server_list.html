@@ -1,0 +1,44 @@
+{% extends 'Module_TeamManagement\Datatables\DeploymentPackage.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'js/server.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+  <h1 class="page-header">Books</h1>
+
+  <!-- BUTTON TO TRIGGER THE ACTION -->
+  <p>
+    <button type="button"
+            class="btn btn-primary js-create-server"
+            data-url="{% url 'DMmod:server_create' %}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New book
+    </button>
+  </p>
+
+  <table class="table" id="server-table">
+    <thead>
+      <tr>
+        <th>IP_Address</th>
+        <th>Instance_ID</th>
+        <th>Instance Name</th>
+        <th>State</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'Module_TeamManagement/Datatables/partial_server_list.html' %}
+    </tbody>
+  </table>
+
+  <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-server">
+   <div class="modal-dialog">
+     <div class="modal-content">
+     </div>
+   </div>
+
+{% endblock %}

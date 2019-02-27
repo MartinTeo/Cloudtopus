@@ -1,0 +1,67 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+
+{% block bootstrapContent %}
+<div class= "redirect">
+    <span>
+      <button onclick="location.href= '{% url 'TMmod:uploadcsv' %}';" type="button" class="btn btn-dark">Course Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadteam' %}';" type="button" class="btn btn-dark active">Teams Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadtools' %}?user=faculty';" type="button" class="btn btn-dark">Tools Setup</button>
+    </span>
+<div>
+
+<div class="col-md-8">
+<h1>Teams Setup</h1>
+
+<form action="{% url 'TMmod:uploadteam' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+    {% csrf_token %}
+
+    <div class="form-group">
+      <div class="col-md-4">
+        <label for="name" class="control-label">Course Code</label>
+          <select class="form-control col-md-offset-3" id="course_section" name="course_section">
+            <option value="" disabled selected>Select your course</option>
+            {% for course_title,course_sectionList in courses.items %}
+                {% for course_section in course_sectionList %}
+                    {% if course_section.section_number != 'G0' %}
+                        <option value={{course_section.id}}>{{ course_section.to_string }}</option>
+                    {% endif %}
+                {% endfor %}
+          {% endfor %}
+        </select>
+
+        </br>
+
+        <label for="name" class="control-label">File Input</label>
+        <input type="file" class="form-control" name="file" id="file" aria-describedby="fileHelp">
+    </div>
+  </div>
+    <input type="hidden" id="user" name="user" value="faculty">
+    <input type="hidden" id="action" name="action" value="batch">
+
+    <div class="col-md-4">
+    <div class="form-group">
+      <div style="margin-bottom:10px;">
+          <button class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+  </div>
+
+</form>
+
+<label for="name" class="control-label">
+  <a href="\static\sampledocs\team_information.xlsx" download data-toggle="popover" data-html="true" data-trigger="hover" data-content="Click to download sample excel file.">Help <i class="far fa-question-circle"></i></a>
+</label>
+
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+</script>
+
+{% include 'popupmessages/message.html' %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'Module_TeamManagement/dashboardbase.html' %}
+
+{% block title %}
+    Student page
+{% endblock %}
+
+{% block sideuserprofile %}
+<div class="col-md-12">
+    <div class="cardsidebar card-user">
+        <div class="card-image">
+        </div>
+            <div class="author">
+                    <img class="avatar border-gray" src="{{ request.session.user_picture }}" alt="...">
+                    <h5 class="title">{{ request.session.user_name }}</h5>
+                <p class="description">
+                  Student
+                </p>
+            </div>
+        <hr>
+    </div>
+</div>
+{% endblock %}
+
+{% block sidenavBar %}
+<li class="nav-item {{ home }}">
+    <a class="nav-link" href="{% url 'TMmod:home' %}">
+        <i class="fas fa-chart-pie"></i>
+        <p>Dashboard</p>
+    </a>
+</li>
+
+<div id="accordion">
+<li class="nav-item {{ student_Team }}">
+    <a class="nav-link" href ="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <i class="fas fa-users"></i>
+        <span class="no-icon"> My Sections</span>
+    </a>
+</li>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" aria-expanded="true" data-parent="#accordion">
+            {% for course_title,course_details in request.session.courseList_updated.items %}
+                <a class="nav-link" href="{% url 'TMmod:sTeam' %}?module={{course_details.id}}">
+                    <p class="col-md-12 control-label">{{course_details.to_string}}</p>
+                </a>
+            {% endfor %}
+        </div>
+</div>
+
+
+<li class="nav-item {{ configureDB_clt }}">
+  <a class="nav-link" href="{% url 'TMmod:uploadtoolStudent' %}?user=student">
+    <i class="fas fa-wrench"></i>
+    <p>Tools Setup</p>
+  </a>
+</li>
+
+{% for tool in request.session.configured_Tools %}
+    {% if tool == 'ITOpsLab' %}
+    <div id="accordion">
+        <li class="nav-item {{ student_Deploy_Base }}">
+            <a class="nav-link" href ="#" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <i class="fas fa-infinity"></i>
+                <p>IT Ops Lab</p>
+            </a>
+        </li>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" aria-expanded="true" data-parent="#accordion">
+            {% for course_title,course_sectionList in request.session.courseList_ITOpsLab.items %}
+                <a class="nav-link" href="{% url 'DMmod:itopslab_studeploy_standard' %}?course_title={{ course_sectionList.0.course_title }}">
+                    <p class="col-md-3 col-sm-3 col-xs-12 control-label">{{ course_title }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+
+{% endblock %}

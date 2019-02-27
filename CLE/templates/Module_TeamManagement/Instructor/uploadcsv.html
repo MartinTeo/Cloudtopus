@@ -1,0 +1,60 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+{% block bootstrapContent %}
+<div class= "redirect">
+    <span>
+      <button onclick="location.href= '{% url 'TMmod:uploadcsv' %}';" type="button" class="btn btn-dark active">Course Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadteam' %}';" type="button" class="btn btn-dark">Teams Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadtools' %}?user=faculty';" type="button" class="btn btn-dark">Tools Setup</button>
+    </span>
+<div>
+
+<div class="col-md-8">
+<h1>Course Setup</h1>
+
+<form action="{% url 'TMmod:uploadcsv' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+    {% csrf_token %}
+    <div class="form-group">
+          <div class="col-md-4">
+      <label for="name" class="control-label">Course Code</label>
+        <select class="form-control" id="course_title" name="course_title">
+          <option value="" disabled selected>Select your course</option>
+        {% for course in courses %}
+            <option value={{course}}>{{course}}</option>
+        {% endfor %}
+        <input type="checkbox" name="add_tool" id="add_tool" value="ITOpsLab"> Initiate IT Ops Lab<br>
+      </select>
+
+      <br>
+        <label for="name" class="control-label">File Input</label>
+        <input type="file" class="form-control" name="file" id="file" aria-describedby="fileHelp">
+      </div>
+    </div>
+    <input type="hidden" id="username" name="username" value={{user.username}}>
+
+    <div class="col-md-4">
+    <div class="form-group">
+      <div style="margin-bottom:10px;">
+        <button class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<label for="name" class="control-label">
+  <a href="\static\sampledocs\student_information.xlsx" download data-toggle="popover" data-html="true" data-trigger="hover" data-content="Click to download sample excel file.">Help <i class="far fa-question-circle"></i></a>
+</label>
+
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+</script>
+
+{% include 'popupmessages/message.html' %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,409 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+{% block bootstrapContent %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/telegrammgmt.css' %}">
+</head>
+
+
+<div class="content">
+    <div class="container-fluid">
+        <h1 style="text-align: center"> Telegram Management </h1>
+        <div class="navDiv text-center" style="display: block;margin-left: auto;margin-right: auto;">
+            {% for course_section in course_sectionList %}
+                {% if course_section.section_number != 'G0' %}
+                    <a href="/instructor/TelegramManagement/?course_section={{ course_section.id }}" role="button" class="btn btn-dark">{{ course_section.section_number }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+        {% if current_course_section_details.section_number == 'G0' %}
+            <h2 style = "background-color:#23272b; color:white; text-align: center">{{ current_course_section_details.course_title }}</h2>
+        {% else %}
+            <h2 style = "background-color:#23272b; color:white; text-align: center"> {{ current_course_section_details.course_title  }} {{ current_course_section_details.section_number }}</h2>
+        {% endif %}
+    </div>
+
+    <br>
+    <!-- if no channel/group registered-->
+    {% if telegram_chats|length == 0 %}
+        <div class="col-md-9" style="display: block;margin-left: auto;margin-right: auto;">
+            <div class="card ">
+                <div class="card-header" style="display: block;margin-left: auto;margin-right: auto;">
+                    <img src="{% static 'images/Telegram Logo.png' %}" alt="..." width=150px height = 150px style="display: block;margin-left: auto;margin-right: auto;" >
+                    <br>
+                    <div style = "display: block;margin-left: auto;margin-right: auto;"> <h3 align = "center">Oops! <br> You have not configured any groups/channels </h3></div>
+                    <br>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                        <button type="button" class="btn" style="background-color: #0088CC; color:white;" data-toggle="modal" data-target="#createGroup" value="createGroup">
+                            <b>Add/Create Section<br> Group</b>
+                        </button>
+                        <button type="button" class="btn" style="background-color: #0088CC; color:white;" data-toggle="modal" data-target="#createChannel" value="createChannel">
+                            <b>Add/Create Section<br> Channel</b>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!--if channel/group registered-->
+    {% else %}
+        <div class="col-md-9" style="display: block;margin-left: auto;margin-right: auto;">
+            <div class="card ">
+                <div class="card-header">
+                        <div class="navDiv2" style="display: block;margin-left: auto;margin-right: auto; margin-bottom:20px;">
+                            {% for telegram_chat in telegram_chats %}
+                                <a href="/instructor/TelegramManagement/?course_section={{ current_course_section_details.id }}&chat_name={{ telegram_chat.name }}" role="button" class="btn btn-dark"  style="background-color: #0088CC;">{{ telegram_chat.name }}</a>
+                            {% endfor %}
+                            <button type="button" class="btn btn-dark"
+                            style="
+                            width: 35spx;
+                            height: 35px;
+                            text-align: center;
+                            padding: 10px 10px;
+                            color:white;
+                            line-height: 0.5;
+                            border-radius: 25px;"
+                            data-toggle="modal" data-target="#chooseGC" value="chooseGC">
+                            <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+
+                        <h3 style="background-color:#23272b; color:white; text-align: center"> {{ current_telegram_chat.name }} </h3>
+                        <br>
+                        <img src="{% static 'images/Telegram Logo.png' %}" alt="..." width=100px height = 100px style="display: block;margin-left: auto;margin-right: auto;" >
+                        <br>
+                        <div class="col-md-12 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                            <!-- <a href="{{ current_telegram_chat.link }}" id="telegram_chat_link" name="{{ current_telegram_chat.name }}" role="button" class="btn" style="background-color: #0088CC; color:white;"><b>{{current_telegram_chat.type}} Link</b></a> -->
+                            <a onclick="redirectToLink()" id="telegram_chat_link" name="{{ current_telegram_chat.name }}" value="{{ current_telegram_chat.link }}" role="button" class="btn" style="background-color: #0088CC; color:white;"><b>{{current_telegram_chat.type}} Link</b></a>
+                            <div class="btn-group dropright" style="position:relative">
+                                <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" style="position:relative">
+                                    <a class = "dropdown-item" data-toggle="modal" data-target="#deleteFunction" value="delete" href= "#">Delete {{current_telegram_chat.type}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    <br>
+
+                    <div class="col-md-12">
+                    <div class ="row">
+                    <div class = "col-md-6">
+                    <div class ="card">
+                        <div class="card-header">
+                                <h3 class="card-title bg-dark text-white text-center" style="margin-bottom:15px;">SEND A <br>MESSAGE</h3>
+                            <p class="card-category text-center">This message will be sent to {{current_telegram_chat.name}} {{current_telegram_chat.type}}</p>
+                        </div>
+                        <div class="card-body">
+                            <form action="{% url 'CMmod:faculty_telegram_SendMessage' %}" method="POST" enctype="multipart/form-data" class="form-horizontal" id="messageForm">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <textarea class="form-control col-md9" style="height:200px; margin-bottom:15px" name="message" id="message"></textarea>
+                                    <input type="hidden" name="course_section" id="course_section" value={{current_course_section_details.id}}>
+                                    <input type="hidden" name="telegram_chat_link" id="telegram_chat_link" value={{current_telegram_chat.link}}>
+                                    <input type="hidden" name="telegram_chat_type" id="telegram_chat_type" value={{current_telegram_chat.type}}>
+                                    <input type="hidden" name="telegram_chat_name" id="telegram_chat_name" value={{current_telegram_chat.name_join}}>
+                                    <hr>
+                                    <p class="card-category text-center"> Please select a datetime to send your message</p>
+                                    <div class = "text-center">
+                                        <br>
+                                        <input type="datetime-local" id="setDate" name="setDate" placeholder="Date Time" onkeyup="stoppedTyping()"/>
+
+                                        <span class="validity" id="validity"></span>
+                                        <br><br>
+                                        <input class="custom-control-input" type="checkbox" name="datetime" id="dateNow" value="now" onclick="setDateTimeNow();">
+                                        <label class="custom-control-label" for="dateNow">Now</label>
+                                    </div>
+
+                                <!-- Submission -->
+                                    <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                                        <button class="btn btn-warning" id="sendMsg"><b>Send Message</b></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    </div>
+                    <div class = "col-md-6">
+                    <div class ="card">
+                        <div class="card-header">
+                                <h3 class="card-title bg-dark text-white text-center" style="margin-bottom:15px">REGISTERED MEMBERS<br></h3>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="text-center"><b>{{current_telegram_chat.members_count}}</b></h3>
+                        </div>
+                        <div class="text-center" style ="margin-left:15px; margin-right:15px;">
+                            {% include "Module_TeamManagement/Datatables/telegramMembers_table.html" %}
+                        </div>
+                        <form action="{% url 'CMmod:faculty_telegram_UpdateChatMembers' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="hidden" name="course_section" id="course_section" value={{current_course_section_details.id}}>
+                                <input type="hidden" name="chat_link" id="chat_link" value={{current_telegram_chat.link}}>
+                                <input type="hidden" name="chat_name" id="chat_name" value={{current_telegram_chat.name_join}}>
+                                <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                                    <button class="btn btn-warning"><b>Update Members</b></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+<!--Modals for creating group & channel-->
+
+<!--Create Telegram Group-->
+<div class="modal fade" id="createGroup">
+    <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+        <div class="modal-header text-center">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+            <!--Form Create Group-->
+
+            <img src="{% static 'images/Telegram Logo.png' %}" width=100px height = 100px class="text-center">
+            <h4 class="modal-title" >Add/Create Section Group</h4>
+
+            <form action="{% url 'CMmod:faculty_telegram_CreateGroup' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" class="control-label">Please Specify Group Name</label>
+                    <br>
+                    <input type="text" class="form-control text-center col-md9" name="group_name" id="group_name" placeholder="Group Name">
+                    <br>
+                    <!-- <input type="text" class="form-control text-center col-md9" name="username" id="username" placeholder="Additional Telegram Username"> -->
+                    <input type="hidden" name="course_section" id="course_section" value={{current_course_section_details.id}}>
+                </div>
+                <!-- Submission -->
+                <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                    <button class="btn btn-dark">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--Create Telegram Channel-->
+<div class="modal fade" id="createChannel">
+    <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+        <div class="modal-header text-center">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+            <!--Form Create Channel-->
+
+            <img src="{% static 'images/Telegram Logo.png' %}" width=100px height = 100px class="text-center">
+            <h4 class="modal-title" >Add/Create Section Channel</h4>
+
+            <form action="{% url 'CMmod:faculty_telegram_CreateChannel' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" class="control-label">Please Specify Channel Name</label>
+                    <input type="text" class="form-control text-center col-md9" name="channel_name" id="channel_name" placeholder="Channel Name">
+                    <input type="hidden" name="course_section" id="course_section" value={{current_course_section_details.id}}>
+                </div>
+                <!-- Submission -->
+                <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                    <button class="btn btn-dark">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--Choose Group/Channel-->
+<div class="modal fade" id="chooseGC">
+    <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+        <div class="modal-header text-center">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+            <!--Form Create Group-->
+
+            <img src="{% static 'images/Telegram Logo.png' %}" width=100px height = 100px class="text-center">
+            <h4 class="modal-title " style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 20px;margin-top:10px;">Add or Create Group/Channel</h4>
+
+            <!-- Buttons -->
+            <div class="btn-group text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: auto">
+                <button type="button" class="btn" style="background-color: #0088CC; color:white;" data-toggle="modal" data-target="#createGroup" value="createGroup" onclick=" $(function(){ $('#chooseGC').modal('hide')});">
+                    <b>Add/Create Section<br> Group</b>
+                </button>
+                <button type="button" class="btn" style="background-color: #0088CC; color:white;" data-toggle="modal" data-target="#createChannel" value="createChannel" onclick=" $(function(){ $('#chooseGC').modal('hide')});">
+                    <b>Add/Create Section<br> Channel</b>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--Delete Telegram Group/Channel-->
+<div class="modal fade" id="deleteFunction">
+    <div class="modal-dialog modal-md">
+    <div class="modal-content">
+
+        <div class="modal-header text-center">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body text-center">
+            <!--Form Create Channel-->
+
+            <img src="{% static 'images/Telegram Logo.png' %}" width=100px height = 100px class="text-center">
+            <h4 class="modal-title" >Delete {{current_telegram_chat.type}}</h4>
+
+            <form action="{% url 'CMmod:faculty_telegram_DeleteChat' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" class="control-label">Are you sure you want to delete {{current_telegram_chat.name}} ({{current_telegram_chat.type}}) ?</label>
+                    <input type="hidden" name="chat_type" id="chat_type" value={{current_telegram_chat.type}}>
+                    <input type="hidden" name="chat_name" id="chat_name" value={{current_telegram_chat.name_join}}>
+                    <input type="hidden" name="course_section" id="course_section" value={{current_course_section_details.id}}>
+                </div>
+                <!-- Submission -->
+                <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;margin-bottom: 10px">
+                    <button class="btn btn-danger">Delete</button>
+                    <button class="btn btn-dark" data-dismiss="modal">Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    function redirectToLink(){
+        var chat_link = document.getElementById("telegram_chat_link").getAttribute("value");
+        var chat_name = document.getElementById("telegram_chat_link").getAttribute("name");
+
+        if(chat_link == "None"){
+            request_data = { 'telegram_chat_name' : chat_name };
+            $.ajax({
+                url : "{% url 'CMmod:faculty_telegram_GetChatLink' %}",
+                type : "GET",
+                data : request_data,
+
+                success : function(response_data){
+                    if(response_data.telegram_chat_link != null){
+                        document.getElementById("telegram_chat_link").value = telegram_chat_link;
+                        window.location.href = response_data.telegram_chat_link;
+                    };
+                    console.log(response_data);
+                    document.getElementById("errorMessage_Content").innerHTML = response_data.error_message;
+                    $('[data-toggle="popover"]').popover();
+                    $('#errorMessage').modal('show');
+                },
+            });
+        }else{
+            window.location.href = chat_link;
+        };
+    };
+
+    // Add active class to the current button (highlight it)
+    $(function(){
+        pageUrl = location.href;
+        // console.log(pageUrl);
+        $('.navDiv a').each(function () {
+            link = $(this);
+            var href = link.attr("href");
+            // console.log(link.attr("href"));
+            if (href === pageUrl.substring(pageUrl.length-href.length)) {
+                // console.log("success");
+                link.addClass("active");
+            }
+        });
+
+        $('.navDiv2 a').each(function () {
+            link = $(this);
+            var href = link.attr("href");
+            console.log(link);
+            // console.log(link.attr("href") === pageUrl);
+            if (href === pageUrl.substring(pageUrl.length-href.length)) {
+                console.log("success");
+                link.addClass("active");
+            }
+        });
+
+    });
+
+    window.addEventListener('load', function () {
+        var now = new Date();
+        let today = [
+                [now.getFullYear(),
+                AddZero(now.getMonth() + 1),
+                AddZero(now.getDate())].join("-"),
+            [AddZero(now.getHours()),
+            AddZero(now.getMinutes())].join(":")].join("T");
+        document.getElementById("setDate").setAttribute("min",today);
+    }, false);
+
+
+    $(function(){
+        var nextStatus = document.getElementById("setDate").checkValidity();
+        if (document.getElementById("setDate").value=="" || nextStatus==false){
+            document.getElementById("sendMsg").disabled = true;
+        }
+    });
+
+    function stoppedTyping(){
+        var nextStatus = document.getElementById("setDate").checkValidity();
+        if(document.getElementById("setDate").value=="" || nextStatus==false) {
+            document.getElementById('sendMsg').disabled = true;
+        } else {
+            document.getElementById('sendMsg').disabled = false;
+        }
+    }
+    function AddZero(num) {
+        return (num >= 0 && num < 10) ? "0" + num : num + "";
+    }
+    var isNow = false;
+
+    function setDateTimeNow(){
+        if (document.getElementById("dateNow").value=="now"){
+            // let today = new Date().toDateTimeLocal().toISOString().substr(0, 10);
+            if (isNow==false){
+                var now = new Date();
+                let today = [
+                    [now.getFullYear(),
+                    AddZero(now.getMonth() + 1),
+                    AddZero(now.getDate())].join("-"),
+                [AddZero(now.getHours()),
+                AddZero(now.getMinutes())].join(":")].join("T");
+                console.log(today);
+                document.querySelector("#setDate").value = today;
+                document.getElementById("setDate").setAttribute("readonly","readonly");
+                isNow=true;
+                document.getElementById('sendMsg').disabled = false;
+            } else {
+                document.querySelector("#setDate").value="";
+                document.getElementById("setDate").removeAttribute("readonly");
+                isNow=false;
+                document.getElementById('sendMsg').disabled = true;
+            }
+        }
+    }
+</script>
+{% include 'popupmessages/message.html' %}
+{% endblock %}

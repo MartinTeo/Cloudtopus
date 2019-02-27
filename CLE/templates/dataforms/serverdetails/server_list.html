@@ -1,0 +1,52 @@
+{% extends 'dataforms/dataformbase.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'js/dataforms/server.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <!-- BUTTON TO TRIGGER THE ACTION -->
+  <p>
+      <button type="button" class="btn btn-primary js-create-server"data-url="{% url 'DMmod:server_create' %}?course_title={{course_title}}">
+          <span class="glyphicon glyphicon-plus"></span> New Server
+      </button>
+      <button id="delete_all_servers" type="button" class="btn btn-danger js-create-server" data-url="{% url 'DMmod:server_delete_all' course_title=course_title %}?course_title={{course_title}}">
+          <span class="glyphicon glyphicon-plus"></span> Delete All Servers
+      </button>
+  </p>
+
+  <table class="table" id="server-table">
+    <thead>
+      <tr>
+        <th>Server IP</th>
+        <th>Server ID</th>
+        <th>Server Name</th>
+        <th>Server Type</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% include 'dataforms/serverdetails/partial_server_list.html' %}
+    </tbody>
+  </table>
+
+  <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-server" data-backdrop="static"  data-keyboard="false">
+   <div class="modal-dialog">
+     <div class="modal-content">
+     </div>
+   </div>
+
+<script>
+    $(document).ready(function() {
+      console.log("{% url 'DMmod:itopslab_studeploy_standard' %}server/?course_title={{course_title}} #server-table");
+      $("#server-table").load("{% url 'DMmod:itopslab_studeploy_standard' %}server/?course_title={{course_title}} #server-table");
+
+      var servers_count = "{{servers_count}}";
+      if(servers_count == 0){
+          document.getElementById("delete_all_servers").disabled = true;
+      };
+    });
+</script>
+{% endblock %}

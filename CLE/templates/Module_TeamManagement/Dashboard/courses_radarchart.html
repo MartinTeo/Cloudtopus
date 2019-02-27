@@ -1,0 +1,69 @@
+{% load staticfiles %}
+{% load charts_extra %} <!-- django filter from charts_extra-->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Chart.js</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="myClassRoundCharts{{forloop.counter}}" width="400" height="400"></canvas>
+    </div>
+    
+    <script>
+    var ctx = document.getElementById("myClassRoundCharts{{forloop.counter}}").getContext('2d');
+    var bgColors= [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ]
+    var borderColors=  [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ]
+
+    var myClassRoundCharts{{forloop.counter}} = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['min' , 'max' , 'median' , 'average'],
+            datasets: [
+            {% for courseID in CourseTrailResults %}
+                {% if course in courseID %}
+                    { 
+                        label: '{{courseID}}',
+                        data: {% with CourseTrailResults|get_item:courseID as courseDict%}   // custom django filter
+                                {{ courseDict.Students_Information.badges|describeSet}} 
+                            {% endwith %} ,
+                        fill:true,
+                        backgroundColor:bgColors[{{ forloop.counter }}],
+                        borderColor:borderColors[{{ forloop.counter }}]   
+                        
+                    },
+                {% endif %}
+            {% endfor %}
+
+            ]
+            
+        },
+        options: {
+            title: {
+                display:true,
+                text : 'statistics of student badges across class'
+            }
+        }
+    }); 
+    </script>
+  </body>
+</html>

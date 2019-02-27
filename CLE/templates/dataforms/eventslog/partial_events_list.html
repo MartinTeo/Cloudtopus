@@ -1,0 +1,25 @@
+{% for event in pending_events %}
+  <tr>
+      <td>{{ event.class }}</td>
+      <td>{{ event.events_name }}</td>
+      <td>{{ event.event_run_at }}</td>
+      <td> Pending </td>
+    <td style="width: 250px">
+      <button type="button"
+              class="btn btn-warning btn-sm js-update-events"
+              data-url="{% url 'ECmod:events_update' pk=event.events_id %}">
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+      <button type="button"
+             class="btn btn-danger btn-sm js-delete-events"
+             data-url="{% url 'ECmod:events_delete' pk=event.events_id %}">
+       <span class="glyphicon glyphicon-trash"></span> Delete
+     </button>
+    </td>
+  </tr>  
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No events</td>
+  </tr> 
+
+{% endfor %}

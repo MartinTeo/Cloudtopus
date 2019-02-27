@@ -1,0 +1,23 @@
+<form method="post" action="{% url 'DMmod:server_create' %}" class="js-server-create-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title">Add a new Server</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    {% include 'dataforms/serverdetails/partial_server_form.html' %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" onclick="enableButton()">Add Server</button>
+    <input type="hidden" name="course_title" id="course_title" value={{course_title}}>
+  </div>
+</form>
+
+<script>
+    function enableButton(){
+        document.getElementById("delete_all_servers").disabled = false;
+    };
+</script>

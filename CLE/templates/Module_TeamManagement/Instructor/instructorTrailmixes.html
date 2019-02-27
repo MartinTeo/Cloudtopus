@@ -1,0 +1,17 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+
+{% block TrailmixContent %}
+<div class="redirect">
+    <span>
+      <button onclick="location.href= '{% url 'TMmod:uploadcsv' %}';" type="button" class="btn btn-dark">Course Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadteam' %}';" type="button" class="btn btn-dark">Teams Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadtools' %}?user=faculty';" type="button" class="btn btn-dark active">Tools Setup</button>
+    </span>
+<div>
+
+
+<div class="col-md-12">
+<h1>Trailmix Setup</h1>
+{% include "dataforms/trailmixes/trailhead_list.html" %}
+</div>
+{% endblock %}

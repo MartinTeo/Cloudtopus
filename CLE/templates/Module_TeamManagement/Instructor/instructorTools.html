@@ -1,0 +1,327 @@
+{% extends 'Module_TeamManagement/Instructor/instructorBase.html' %}
+{% load staticfiles %}
+{% block bootstrapContent %}
+{% include "loading.html" %}
+
+<!-- Button to Open the Modal -->
+</br>
+<div class="redirect">
+    <span>
+      <button onclick="location.href= '{% url 'TMmod:uploadcsv' %}';" type="button" class="btn btn-dark">Course Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadteam' %}';" type="button" class="btn btn-dark">Teams Setup</button>
+      <button onclick="location.href = '{% url 'TMmod:uploadtools' %}?user=faculty';" type="button" class="btn btn-dark active">Tools Setup</button>
+    </span>
+</div>
+
+<div class="col-md-8">
+<h1>Tools Setup</h1>
+
+<h3 style="margin-left:10px;">Select Tool:</h3>
+<span style ="margin-left:10px">
+<button type="button" class="btn btn-light" data-toggle="modal" data-target="#trailhead" data-whatever="Trailhead" id="type" value="trailhead">
+  <img src="{% static 'images/Trailhead Logo.png' %}" alt="..." class="rounded-circle" align="center" onclick='setTool("Trailhead")'><br>Trailhead
+</button>
+<!-- <button type="button" class="btn btn-light" data-toggle="modal" data-target="#otherToolsModal" data-whatever="Kahoot" id="type" value ="kahoot">
+    <img src="{% static 'images/Kahoot Logo.png' %}" alt="..." class="rounded-circle" align="center" onclick='setTool("Kahoot")'><br>Kahoot</button> -->
+<!-- <button type="button" class="btn btn-light" data-toggle="modal" data-target="#otherToolsModal" data-whatever="Tableau" id="type" value="tableau">
+    <img src="{% static 'images/Tableau Logo.png' %}" alt="..." class="rounded-circle" align="center" onclick='setTool("Tableau")'><br>Tableau</button> -->
+<button type="button" class="btn btn-light" data-toggle="modal" data-target="#TelegramModalstep1" data-whatever="Telegram" id="type" value="Telegram">
+    <img src="{% static 'images/Telegram Logo.png' %}" alt="..." class="rounded-circle" align="center" onclick='setTool("Telegram")'><br>Telegram</button>
+</span>
+
+<div class="modal fade" id="trailhead">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Set up Trailhead</h4>
+        <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <button type="button" class="btn btn-light" data-toggle="modal" data-target="#otherToolsModal" data-whatever="Trailhead" id="trailheadsub" value="trailhead">
+          <img src="{% static 'images/trailhead_setup.png' %}" alt="..." class="rounded-circle" align="center"><br>Trailhead
+        </button>
+        <button type="button" class="btn btn-light" onclick="location.href= '{% url 'TMmod:trailhead_list' %}';">
+          <img src="{% static 'images/trailmix_setup.png' %}" alt="..." class="rounded-circle" align="center"><br>TrailMix/ Badges
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- The Modal -->
+  <div class="modal fade" id="otherToolsModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Set up Trailhead</h4>
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <!--Form-->
+          <form action="{% url 'TMmod:uploadtools' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+              {% csrf_token %}
+              <div class="form-group">
+                  <label for="name" class="col-md-3 col-sm-3 col-xs-12 control-label">Course Code</label>
+                    <select class="form-control col-md-offset-3" id="course_title" name="course_title">
+                      <option value="" disabled selected>Select your course</option>
+                      {% for course_title,course_sectionList in courses.items %}
+                          {% for course_section in course_sectionList %}
+                              {% if course_section.section_number != 'G0' %}
+                                  <option value={{course_section.id}}>{{ course_section.to_string }}</option>
+                              {% endif %}
+                          {% endfor %}
+                    {% endfor %}
+                  </select>
+
+                  <br>
+                  <!-- <label for="name" class="col-md-3 col-sm-3 col-xs-12 control-label">Learning Tools</label>
+                    <select class="form-control" id="type" name="type">
+                      <option value="" disabled selected>Select your tools</option>
+                          <option value="Trailhead">Trailhead</option>
+                          <option value="Tableu">Tableu</option>
+                          <option value="Kahoot">Kahoot</option>
+                    </select>
+                  </br> -->
+
+                  <label for="name" class="col-md-3 col-sm-3 col-xs-12 control-label">File Input</label>
+                  <input type="file" class="form-control" name="file" id="file" aria-describedby="fileHelp">
+              </div>
+              <input type="hidden" id="user" name="user" value="faculty">
+              <input type="hidden" id="action" name="action" value="batch">
+              <input type="hidden" id="toolType" name="type" value="Trailhead">
+          <!-- end of Form -->
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+        <!-- <button class="btn btn-primary" data-dismiss="modal">Back</button> -->
+        <br>
+          <button class="btn btn-warning">Submit</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--Telegram modal 1-->
+  <div class="modal fade" id="TelegramModalstep1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Set up Telegram</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <!--Form-->
+          <form action="." data-url="{% url 'TMmod:telegram_setup' %}" method="POST" id="phone_number_form">
+
+              <label for="name">Please enter a valid phone number.</label>
+              <div class="form-group row">
+                <label for="phone_number" class="col-sm-2 col-form-label">+65</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="Phone Number" onkeypress="return isNumberKey(event)">
+                </div>
+              </div>
+<!--
+              <input type="hidden" id="user" name="user" value="faculty">
+              <input type="hidden" id="action" name="action" value="batch"> -->
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <br>
+
+          <div class="ajax-button">
+            <div class="fa fa-check done"></div>
+            <div class="fa fa-close failed"></div>
+            <button class="submit">SEND CODE</button>
+            <!-- <button class="btn btn-warning submit">Send verification code</button> -->
+          </div>
+        </div>
+        </form>
+          <!-- end of Form -->
+      </div>
+    </div>
+  </div>
+
+
+  <!--Telegram modal 2-->
+  <div class="modal fade" id="TelegramModalstep2">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Set up Telegram</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <!--Form-->
+          <form action="{% url 'TMmod:telegram_setup' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+
+              {% csrf_token %}
+
+              <label for="name">We've sent the code via Telegram. Please enter the code below.</label>
+              <div class="form-group row">
+                <label for="phone_number" class="col-sm-2 col-form-label">Code: </label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" name="login_code" id="login_code" placeholder="Verification Code" onkeypress="return isNumberKey(event)">
+                  <input type="hidden" id="phone_number" name="phone_number" value="{{phone_number}}">
+
+                </div>
+              </div>
+
+              <input type="hidden" id="user" name="user" value="faculty">
+              <input type="hidden" id="action" name="action" value="batch">
+              <input type="hidden" id="toolType" name="type" value="Telegram">
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button class="btn btn-dark TelegramModalstep1" data-dismiss="modal">Previous Step</button>
+          <button class="btn btn-warning">Submit</button>
+        </div>
+        </form>
+          <!-- end of Form -->
+      </div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(function(){
+    $(".TelegramModalstep2").click(function() {
+       $("#TelegramModalstep2").modal();
+    });
+    $(".TelegramModalstep1").click(function() {
+       $("#TelegramModalstep1").modal();
+    });
+    $("#trailheadsub").click(function() {
+       $("#trailhead").modal('hide');
+    });
+    $("#trailheadsub2").click(function() {
+       $("#trailhead").modal('hide');
+    });
+  });
+
+  function isNumberKey(evt)
+			{
+				var charCode = (evt.which) ? evt.which : evt.keyCode;
+				if (charCode != 46 && charCode > 31
+				&& (charCode < 48 || charCode > 57))
+				return false;
+				return true;
+			}
+
+
+  function setTool(toolName) {
+    var tool = toolName;
+    document.getElementById('toolType').value = tool;
+    document.querySelector(".modal-title").textContent = "Set up " + toolName;
+  }
+</script>
+
+<script>
+$(document).ready(function(){
+  var $myForm = $('#phone_number_form')
+  $myForm.submit(function(event){
+      event.preventDefault()
+      var $formData = $(this).serialize()
+      var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+      $.ajax({
+          method: "POST",
+          url: $thisURL,
+          data: $formData,
+          success: handleFormSuccess,
+          error: handleFormError,
+      })
+  })
+
+  function handleFormSuccess(data, textStatus, jqXHR){
+      console.log(data)
+      console.log(textStatus)
+      console.log(jqXHR)
+      $('#TelegramModalstep1').modal('hide')
+      $('#TelegramModalstep2').modal('show')
+  }
+
+  function handleFormError(jqXHR, textStatus, errorThrown){
+      console.log(jqXHR)
+      console.log(textStatus)
+      console.log(errorThrown)
+  }
+})
+</script>
+
+<script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+</script>
+
+<!-- <label for="name" class="control-label">
+  <a href="/images/myw3schoolsimage.jpg" download data-toggle="popover" data-html="true" data-trigger="hover" data-content="Click to download sample excel file.">Help <i class="far fa-question-circle"></i></a>
+</label>
+
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+});
+</script> -->
+
+{% include 'popupmessages/message.html' %}
+</div>
+{% endblock %}

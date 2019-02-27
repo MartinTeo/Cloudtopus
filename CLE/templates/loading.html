@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Loading...</title>
+    <link href="{% static 'css/loading.css' %}" rel="stylesheet" />
+    <!-- <script type="text/javascript">
+      $(window).on('load',function(){
+        $('.preloader').addClass('complete')
+      })
+    </script> -->
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $(".submit").click(function() {
+        $(".submit").addClass("loading");
+        setTimeout(function() {
+          $(".submit").addClass("hide-loading");
+          // For failed icon just replace ".done" with ".failed"
+          $(".done").addClass("finish");
+        }, 3000);
+        setTimeout(function() {
+          $(".submit").removeClass("loading");
+          $(".submit").removeClass("hide-loading");
+          $(".done").removeClass("finish");
+          $(".failed").removeClass("finish");
+        }, 5000);
+      })
+      });
+    </script>
+
+  </head>
+  <!-- <body>
+    <div class="preloader">
+      <div class="loader">
+      </div>
+    </div>
+  </body> -->
+</html>

@@ -1,0 +1,60 @@
+{% extends 'dataforms/dataformbase.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'js/dataforms/dp.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <!-- BUTTON TO TRIGGER THE ACTION -->
+  {% if 'instructor' in request.path %}
+  <p>
+    <button type="button"
+            class="btn btn-primary js-create-dp"
+            data-url="{% url 'DMmod:dp_create' %}?course_title={{course_title}}">
+      <span class="glyphicon glyphicon-plus"></span>
+      New Deployment Package
+    </button>
+    <button id="delete_all_packages"
+            type="button"
+            class="btn btn-danger js-create-dp"
+            data-url="{% url 'DMmod:dp_delete_all' course_title=course_title %}?course_title={{course_title}}">
+      <span class="glyphicon glyphicon-plus"></span>
+      Delete All Deployment Packages
+    </button>
+  </p>
+  {% endif %}
+
+  <table class="table" id="dp-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Git Link</th>
+        <th>Shared Course Sections</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% include 'dataforms/deploymentpackage/partial_dp_list.html' %}
+    </tbody>
+  </table>
+
+  <!-- THE MODAL WE WILL BE USING -->
+ <div class="modal fade" id="modal-dp">
+   <div class="modal-dialog">
+     <div class="modal-content">
+     </div>
+   </div>
+
+ <script>
+     $(document).ready(function() {
+         console.log("{% url 'DMmod:itopslab_setup' %}deployment_package/?course_title={{course_title}} #dp-table")
+         $("#dp-table").load("{% url 'DMmod:itopslab_setup' %}deployment_package/?course_title={{course_title}} #dp-table");
+
+         var servers_count = "{{dps_count}}";
+         if(servers_count == 0){
+             document.getElementById("delete_all_packages").disabled = true;
+         };
+     });
+ </script>
+{% endblock %}

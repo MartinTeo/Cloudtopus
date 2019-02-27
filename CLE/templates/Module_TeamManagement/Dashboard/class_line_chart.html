@@ -1,0 +1,70 @@
+{% load staticfiles %}
+{% load charts_extra %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>My Chart.js</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="myChart" width="1000" height="800"></canvas>
+    </div>
+
+    <script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'bubble',
+        data: {
+            datasets: [
+                {% for index in CourseTrailResults.studentLoopTimes %}
+                 {
+                    label: '{{CourseTrailResults.class.Students_Information.students|get_index:index}}',
+                    data: [
+                    {
+                        x: {{CourseTrailResults.class.Students_Information.badges|get_index:index}},
+                        y: {{CourseTrailResults.class.Students_Information.points|get_index:index}},
+                        r: 3
+                    }
+                    ],
+                    backgroundColor:"#ff6384",
+                    hoverBackgroundColor: "#ff6384"
+                },
+                {% endfor %}]
+        },
+        options: {
+          legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Points'
+                    },
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                xAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Badges'
+                    },
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
+
+
+    </script>
+  </body>
+</html>

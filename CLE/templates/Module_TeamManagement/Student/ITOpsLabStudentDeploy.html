@@ -1,0 +1,95 @@
+{% extends 'Module_TeamManagement/Student/studentBase.html' %}
+{% load staticfiles %}
+
+{% block bootstrapContent %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/itopsevent.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.2/dist/jquery.fancybox.min.css" />
+ </head>
+
+
+<div class="col-md-12">
+    <img src="{% static 'images/ITOpsLab Header.png' %}" alt="Devops" width=370px height = 180px style="display: block;margin-left: auto;margin-right: auto;"><br>
+        <h2 class = "text-center"> {{ course_title }} </h2>
+        <div class="redirect">
+            <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+                <button onclick="location.href= '{% url 'DMmod:itopslab_studeploy_standard' %}?course_title={{course_title}}';" type="button" class="btn btn-dark active">Deploy</button>
+                <button onclick="location.href = '{% url 'DMmod:itopslab_stumonitor' %}?course_title={{course_title}}';" type="button" class="btn btn-dark">Monitor{{all_server_ips}}</button>
+            </div>
+        </div>
+
+        <hr>
+        <div class="itopsheader">DEPLOY</div>
+
+        <br>
+        <div class="redirect">
+            <div class="btn-group col-md-8 text-center" style="display: block;margin-left: auto;margin-right: auto;">
+                <button onclick="location.href= '{% url 'DMmod:itopslab_studeploy_standard' %}?course_title={{course_title}}';" type="button" class="btn btn-dark">Standard</button>
+                <button onclick="location.href = '{% url 'DMmod:itopslab_studeploy' %}?course_title={{course_title}}';" type="button" class="btn btn-dark active">Step-By-Step</button>
+                <div class="btn-group dropright">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Instructions
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" onclick="one()">1. Get Account Number</a>
+                    <a class="dropdown-item" onclick="two()">2. Launch Server</a>
+                    <a class="dropdown-item" onclick="three()">3. Connect to Server</a>
+                    <a class="dropdown-item" onclick="four()">4. Configure AWS details</a>
+                    <a class="dropdown-item" onclick="five()">5. Assigning Elastic IP</a>
+                    <a class="dropdown-item" onclick="six()">6. Deploy Web App</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% include 'Module_TeamManagement/Student/ITOpsStudentDeployForm.html' %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<script>
+$(document).ready(function() {
+    $(".btn-group .dropright").hover(
+        function() {
+            $('.dropdown-menu').stop(true, true).slideDown('medium');
+        },
+        function() {
+            $('.dropdown-menu').stop(true, true).slideUp('medium');
+        }
+    );
+});
+</script>
+
+<script>
+  function one() {
+    window.open("https://docs.google.com/document/d/e/2PACX-1vRryEZSP1wLHrlQMkSkJRgJCta4KbrVJNQdXAv4tqbEFjJsVhN6maWO6hTXhZ_3OmmbDrRabUM95Qb5/pub");
+  }
+
+  function two() {
+    window.open("https://docs.google.com/document/d/e/2PACX-1vT9NBil83AyK1wyQQMbPlj0bgi0JK5vQ0_sQViHFAKaawvswifTfH3PR5yLAgV_r9zLcVmolxkTmWWI/pub");
+  }
+
+  function three() {
+    window.open("https://docs.google.com/document/d/e/2PACX-1vT4ii7WOVWMxObUpTzCgAeI4aoGz_aA_yTEbBjt94hLRDcWgUabY_iCRoFiBeaurhzzHpShR9P-Oepa/pub");
+  }
+
+  function four() {
+    window.open("https://docs.google.com/document/d/e/2PACX-1vSrPnp1zWCeGekSUBLNu-5S053t0GEGI4b9AaNz_RMemRFUJj2bK748v1SeyktQRtmdtK7xjEyxAuVX/pub");
+  }
+
+  function five() {
+    window.open("https://docs.google.com/document/d/e/2PACX-1vSWvrYb-GR2jvh5mLxFyK8BgOwDaNlgzGCVCeDTA1dh6KGrdwxdohWmO9RlS0aqy-k1efD163BAAxuT/pub");
+  }
+
+  function six() {
+    window.open("https://www.google.com");
+  }
+</script>
+
+{% include 'popupmessages/message.html' %}
+{% endblock %}

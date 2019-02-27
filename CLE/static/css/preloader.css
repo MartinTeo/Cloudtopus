@@ -1,0 +1,25 @@
+body{
+  margin: 0px;
+  padding: 0px;
+}
+
+#loader{
+  height: 1500px;
+  width: 1500px;
+  background-color: #181516;
+  position: fixed;
+  top:50%;
+  left:50%;
+  transform:
+  translate(-50%,-50%);
+  z-index: 999;
+  transition: all 1s;
+}
+
+#loader img{
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform:
+  translate(-50%,-50%);
+}

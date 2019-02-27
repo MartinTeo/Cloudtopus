@@ -1,0 +1,29 @@
+{% for package_details in dps %}
+  <tr>
+      <td>{{ package_details.deployment_name }}</td>
+      <td>{{ package_details.deployment_link }}</td>
+      <td style="width: 50px">
+          <button type="button"
+                  id="redirect"
+                  value="{{package_details.deployment_link}}"
+                  class="btn btn-warning btn-sm js-update-dp"
+                  onclick="redirectOnClick()">
+            <span class="glyphicon glyphicon-pencil"></span> Go To Link
+          </button>
+      </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No deployment package shared</td>
+  </tr>
+{% endfor %}
+
+<script type="text/javascript">
+    function redirectOnClick() {
+        var link = document.getElementById("redirect").value;
+        if(link.substring(0,4) != "http"){
+            link = 'https://' + link;
+        };
+        window.location.href = link
+    };
+</script>

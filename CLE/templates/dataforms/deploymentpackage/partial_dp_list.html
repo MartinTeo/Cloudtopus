@@ -1,0 +1,28 @@
+{% for package_details in dps %}
+  <tr>
+      <td>{{ package_details.deployment_name }}</td>
+      <td>{{ package_details.deployment_link }}</td>
+
+      {% if package_details.shared_sections %}
+          <td>{{ package_details.shared_sections }}</td>
+      {% else %}
+          <td>None</td>
+      {% endif %}
+      <td style="width: 250px">
+          <button type="button"
+                  class="btn btn-warning btn-sm js-update-dp"
+                  data-url="{% url 'DMmod:dp_update' course_title=course_title pk=package_details.deployment_id %}?course_title={{course_title}}">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+          </button>
+          <button type="button"
+                 class="btn btn-danger btn-sm js-delete-dp"
+                 data-url="{% url 'DMmod:dp_delete' course_title=course_title pk=package_details.deployment_id %}?course_title={{course_title}}">
+           <span class="glyphicon glyphicon-trash"></span> Delete
+          </button>
+      </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="8" class="text-center bg-warning">No deployment package</td>
+  </tr>
+{% endfor %}

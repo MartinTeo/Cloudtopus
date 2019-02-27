@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+{% load staticfiles %} <!-- to load the css -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}">
+    <title>{% block title %} Cloud learning environment {% endblock %}</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" /> -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" /> -->
+    <link href="{% static 'css/light-bootstrap-dashboard.css' %}" rel="stylesheet" />
+    <!-- carousel slider CSS -->
+    <link href="{% static 'css/carousel.css' %}" rel="stylesheet" />
+    <!-- data table -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="sidebar" data-color="black" data-image="{% static 'images/sidebar-5.jpg' %}">
+            <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+            <div class="sidebar-wrapper">
+                <div class="logo">
+                    <a href="{% url 'TMmod:cleAdmin' %}" class="simple-text">
+                        <img class="d-block w-10 center" src="{% static 'images/thunderhead monkeys.png' %}">
+                    </a>
+                </div>
+                <div class="col-md-12">
+                    <div class="cardsidebar card-user">
+                        <div class="card-image">
+                        </div>
+                            <div class="author">
+                                <img class="avatar border-gray" src="http://www.browndailyherald.com/wp-content/uploads/2012/10/1028540347.jpg" alt="...">
+                                <h5 class="title">{{ user.first_name }}</h5>
+                                <p class="description">Administrator</p>
+                            </div>
+                        <hr>
+                    </div>
+                </div>
+
+                <ul class="nav">
+
+
+                    <li class="nav-item {{ home_page }}">
+                        <a class="nav-link" href="{% url 'TMmod:cleAdmin' %}">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Overview</p>
+                        </a>
+                    </li>
+                    <li class="nav-item {{ modulesetup }}">
+                        <a class="nav-link" href="{% url 'TMmod:modSu' %}">
+                          <row><i class="fas fa-upload"></i>
+                          <p>Management</p></row>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg" color-on-scroll="500">
+                <div class="container-fluid">
+                  <span></span> <!--flush burger to right-->
+                    <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown">
+                              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                <span class="no-icon">Hola, Administrator </span>
+
+                              </a>
+                              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                  <a class="dropdown-item">
+
+                                  {% if 'smu.edu.sg' in user.email %} Student {% else %} Instructor {% endif %}</a>
+                                  <div class="divider"></div>
+                                  {% if 'smu.edu.sg' in user.email %}
+                                  <a class="dropdown-item" href="{% url 'TMmod:sProfile' %}">Profile</a>
+                                  <a class="dropdown-item" href="{% url 'Amod:logout' %}">Logout</a>
+                                  {% else %}
+                                  <a class="dropdown-item" href="{% url 'Amod:logout' %}">Logout</a>
+                                  {% endif %}
+                              </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+
+
+            {% block bootstrapContent %}
+
+            {% endblock %}
+            <!--End of Administrator Cards -->
+
+            <footer class="footer">
+                <div class="container">
+                    <nav>
+                        <p class="copyright text-center">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            Thunderhead Monkeys, future of learning
+                        </p>
+                    </nav>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+<!--   Core JS Files   -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
+<script src="{% static 'js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>
+
+{% include 'popupmessages/message.html' %}
+</html>

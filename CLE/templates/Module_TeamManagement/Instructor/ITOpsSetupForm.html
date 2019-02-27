@@ -1,0 +1,209 @@
+{% load staticfiles %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/itopssetup.css' %}">
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
+</head>
+   <!-- MultiStep Form -->
+   <div class="row">
+        <div class="col-md-9 col-md-offset-3" style="display: block;margin-left: auto;margin-right: auto;">
+
+            <form id="msform" action="{% url 'DMmod:itopslab_setup_AMI_Accounts_share' %}" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                {% csrf_token %}
+                <!-- progressbar -->
+                <ul id="progressbar">
+                    <li class="active">Select Class</li>
+                    <li>Select Image</li>
+                    <li>Approve Groups</li>
+                </ul>
+                <!-- fieldsets -->
+                <fieldset>
+                    <h2 class="fs-title">Select Class</h2>
+                    <h3 class="fs-subtitle">Please select a section</h3>
+                    <div class="form-group row">
+                        <div class="col-12">
+                          {% for section_number in section_numbers %}
+                              {% if section_number != 'G0' %}
+                              <div class="custom-control custom-checkbox custom-control-inline mb-5">
+                                        <input class="custom-control-input" type="checkbox" name="courseSection" id={{section_number}} value={{section_number}} onclick="validateCheckbox()">
+                                      <label class="custom-control-label" for={{section_number}}>{{section_number}}</label>
+                              </div>
+                              {% endif %}
+                          {% endfor %}
+                          <div class="custom-control custom-checkbox custom-control-inline mb-5">
+                                  <input class="custom-control-input" type="checkbox" id="checkAll" onclick="validateAllCheckboxes()">
+                                  <label class="custom-control-label" for="checkAll">All classes</label>
+                          </div>
+                        </div>
+                    </div>
+                    <input type="button" id="button_next_class" name="next" class="next action-button" value="Next" onclick="shareAMI()"/>
+                </fieldset>
+                <fieldset>
+                    <h2 id="title_image" class="fs-title">Select Image</h2>
+                    <h3 id="subtitle_image" class="fs-subtitle">Please select the image that you would like to share with the section</h3>
+                    <div class="col-md-8"  style="display: block;margin-left: auto;margin-right: auto; ">
+                        <select class="form-control" id="image_id" name="image_id" onclick="">
+                        </select>
+                    </div>
+                    <br><br>
+                    <hr>
+                    <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                    <input type="button" id="button_next_image" name="next" class="next action-button" value="Next"/>
+                </fieldset>
+                <fieldset>
+                    <h2 id="title_group" class="fs-title">Approve Groups</h2>
+                    <h3 id="subtitle_group" class="fs-subtitle">Please select the groups you would like to send the image to</h3>
+                    {% include "Module_TeamManagement/Datatables/duallistbox.html" %}
+                    <hr>
+                    <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                    <input type="submit" name="submit" id="button_next_group" class="submit action-button" value="Submit"/>
+                    <input type="hidden" name="course_title" id="course_title" value={{course_title}}>
+                </fieldset>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="{% static 'js/multistepform.js' %}" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://yourjavascript.com/7174319415/script.js"></script>
+    <script>
+        $(document).ready(function(){
+            document.getElementById("button_next_class").disabled = true;
+            document.getElementById("button_next_image").disabled = true;
+            document.getElementById("button_next_group").disabled = true;
+        });
+
+        function validateCheckbox(){
+            var checkboxes = document.getElementsByName("courseSection");
+            var all_checkboxes = document.getElementById("checkAll");
+            var isDisabled = true;
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if(checkboxes[i].checked){
+                    isDisabled = false;
+                }else{
+                    all_checkboxes.checked = false;
+                };
+            };
+
+            document.getElementById("button_next_class").disabled = isDisabled;
+        };
+
+        function validateAllCheckboxes(){
+            var all_checkboxes = document.getElementById("checkAll");
+
+            if(all_checkboxes.checked){
+                isDisabled = false;
+            }else{
+                isDisabled = true;
+            };
+
+            document.getElementById("button_next_class").disabled = isDisabled;
+        };
+
+        function shareAMI(){
+            var checkboxes = document.getElementsByName("courseSection");
+            var selected_sectionNumbers = [];
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if(checkboxes[i].checked){
+                    selected_sectionNumbers.push(checkboxes[i].value);
+                };
+            };
+
+            section_data = { 'section_number' : selected_sectionNumbers.join('_')};
+            $.ajax({
+                url : "{% url 'DMmod:itopslab_setup_AMI_get' %}",
+                type : "GET",
+                data : section_data,
+
+                success : function(section_result) {
+                    console.log(section_result);
+
+                    $("#image_id option").remove();
+                    $("#image_id").append('<option value="" selected disabled hidden>Select image here</option>');
+                    document.getElementById("button_next_image").disabled = true;
+
+                    if(section_result.images.length == 0){
+                        document.getElementById("title_image").innerHTML = "OOPS!";
+                        document.getElementById("title_image").style.color = "red";
+                        document.getElementById("subtitle_image").innerHTML = "No images have been configured yet. Please configure images in AWS before proceeding";
+                        document.getElementById("image_id").disabled = true;
+                    }else{
+                        for (var i = section_result.images.length - 1; i >= 0; i--) {
+                            $("#image_id").append('<option value="' + section_result.images[i].image_id + '">'+ section_result.images[i].image_name +'</option>');
+                        };
+                        document.getElementById("title_image").innerHTML = "Select Image";
+                        document.getElementById("title_image").style.color = "black";
+                        document.getElementById("subtitle_image").innerHTML = "Please select the image that you would like to share with the section";
+                        document.getElementById("image_id").disabled = false;
+                    };
+
+                    $('select#image_id').change(function () {
+                        var optionSelected = $(this).find("option:selected");
+                        var image_id  = optionSelected.val();
+                        var image_name = optionSelected.text();
+                        var image_data = {}
+
+                        if(image_id != ""){
+                            document.getElementById("button_next_image").disabled = false;
+                        };
+
+                        image_data = { 'image_id' : image_id , 'section_number' : section_result.section_number, "course_title" : "{{course_title}}"};
+                        $.ajax({
+                            url : "{% url 'DMmod:itopslab_setup_AMI_Accounts_get' %}",
+                            type : "GET",
+                            data : image_data,
+
+                            success : function(image_result) {
+                                console.log(image_result);
+
+                                var account_numbers_table = document.getElementById("account_numbers");
+
+                                // remove existing options here
+                                $("#account_numbers option").remove();
+
+                                if(image_result.nonshared_accounts_list.length != 0 || image_result.shared_accounts_list.length != 0){
+                                    document.getElementById("title_group").innerHTML = "Approve Groups";
+                                    document.getElementById("title_group").style.color = "black";
+                                    document.getElementById("subtitle_group").innerHTML = "Please select the image that you would like to share with the section";
+
+                                    document.getElementById("button_next_group").disabled = false;
+                                }else{
+                                    document.getElementById("title_group").innerHTML = "OOPS!";
+                                    document.getElementById("title_group").style.color = "red";
+                                    document.getElementById("subtitle_group").innerHTML = "No groups have uploaded their account numbers yet";
+
+                                    document.getElementById("button_next_group").disabled = true;
+                                };
+
+                                for (var i = image_result.nonshared_accounts_list.length - 1; i >= 0; i--) {
+                                    var option = document.createElement("OPTION");
+                                    option.value = image_result.nonshared_accounts_list[i].account_number;
+
+                                    var text = document.createTextNode(image_result.nonshared_accounts_list[i].team_name);
+                                    option.appendChild(text);
+
+                                    account_numbers_table.appendChild(option);
+                                };
+
+                                for (var i = image_result.shared_accounts_list.length - 1; i >= 0; i--) {
+                                    var option = document.createElement("OPTION");
+                                    option.value = image_result.shared_accounts_list[i].account_number;
+                                    option.selected = true;
+
+                                    var text = document.createTextNode(image_result.shared_accounts_list[i].team_name);
+                                    option.appendChild(text);
+
+                                    account_numbers_table.appendChild(option);
+                                };
+
+                                demo2.trigger('bootstrapDualListbox.refresh');
+                            },
+                        });
+                    });
+                },
+            });
+        };
+    </script>
+</body>
