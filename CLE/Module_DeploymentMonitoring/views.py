@@ -491,7 +491,7 @@ def faculty_Monitor_Base(requests,response=None):
     response['course_sectionList'] = course_sectionList[course_title]
 
     try:
-        if section_num == "None":
+        if section_num == "GAll":
             # run all servers
             all_section_details = []
             course_details = utilities.getAllTeamDetails(course_sectionList,course_title)
@@ -508,12 +508,12 @@ def faculty_Monitor_Base(requests,response=None):
             for details in section_details:
                 response = utilities.getMonitoringStatus(details["account_number"],details["team_name"],response)
                 # response['event_log'] = utilities.getEventLogs(details["account_number"],details["team_name"])
-
     except Exception as e:
         traceback.print_exc()
         response['error_message'] = 'Error during retrieval of information (Monitoring): ' + str(e.args[0])
         return render(requests, "Module_TeamManagement/Instructor/ITOpsLabMonitor.html", response)
-
+    tz = pytz.timezone('Asia/Singapore')
+    response['last_updated']= str(datetime.datetime.now(tz=tz))[:19]
     return render(requests, "Module_TeamManagement/Instructor/ITOpsLabMonitor.html", response)
 
 

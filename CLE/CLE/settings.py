@@ -34,7 +34,7 @@ DEBUG= False #for deployment
 
 #ALLOWED_HOSTS= ['*']
 ALLOWED_HOSTS = [PUBLIC_IP,PUBLIC_IP_GOOGLE,'www.cloudtopus.com'] + PRODUCTION_DOMAIN + LOCALHOST_DOMAIN
-PRODUCTION_SERVER_HOSTS = ['52.76.46.177','52.76.46.177.xip.io'] + PRODUCTION_DOMAIN + LOCALHOST_DOMAIN
+PRODUCTION_SERVER_HOSTS = PRODUCTION_DOMAIN + LOCALHOST_DOMAIN
 
 
 ADMIN_LOGIN = 'admin3'
@@ -107,9 +107,7 @@ default_DB = 'App_Data'
 cle_DB = 'CLE_Data'
 
 # Checks if it's production linux server
-if 'posix' in os.name and 'alfaried' in getpass.getuser():
-    password = 'mysqldb12345'
-elif 'posix' in os.name and 'ec2-user' in getpass.getuser():
+if 'posix' in os.name and 'ec2-user' in getpass.getuser():
     password = 'cle12345'
 
 # Checks if it's local developement or production
