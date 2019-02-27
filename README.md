@@ -11,8 +11,8 @@ Cloudtopus makes it easy for you to access, track, and analyse students progress
 
 Follow steps from Setting up Application:
 
- 5. Setup up dependencies: 
- 6. Deploy webpage on local server (To-do):
+ 1. Setup up dependencies: 
+ 2. Deploy webpage on local server (To-do):
  
 **About**
 
