@@ -514,7 +514,7 @@ def getPendingTasksLogs(section_num):
     for task in allTasks:
         if 'section_numbers' in ast.literal_eval(task.task_params)[1].keys():
             if section_num in ast.literal_eval(task.task_params)[1]['section_numbers'] or section_num=="GAll":
-                taskInfo = { 'class':section_num }
+                taskInfo = { 'class':ast.literal_eval(task.task_params)[1]['section_numbers'] }
                 taskInfo['events_id']= task.id
                 taskInfo['events_name'] = task.task_name.split('tasks.')[1] #related to tasks.py of event Config
                 taskInfo['event_run_at'] = (task.run_at + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
@@ -533,7 +533,7 @@ def getCompletedTasksLog(section_num):
     for task in allTasks:
         if 'section_numbers' in ast.literal_eval(task.task_params)[1].keys():
             if section_num in ast.literal_eval(task.task_params)[1]['section_numbers'] or section_num=="GAll":
-                taskInfo = { 'class':section_num }
+                taskInfo = { 'class':ast.literal_eval(task.task_params)[1]['section_numbers'] }
                 taskInfo['events_id']= task.id
                 taskInfo['events_name'] = task.task_name.split('tasks.')[1] #related to tasks.py of event Config
                 taskInfo['event_run_at'] = (task.run_at + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S")
