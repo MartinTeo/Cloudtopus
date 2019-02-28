@@ -497,7 +497,7 @@ def faculty_Monitor_Base(requests,response=None):
             course_details = utilities.getAllTeamDetails(course_sectionList,course_title)
             for section_number,section_details in course_details.items():
                 all_section_details += section_details
-
+            response = utilities.getAllLog(section_num,response)
             for details in all_section_details:
                     response = utilities.getMonitoringStatus(details["account_number"],details["team_name"],response)
 

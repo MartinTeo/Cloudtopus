@@ -371,7 +371,7 @@ def student_Team(requests):
     context['module'] = classObj[0].course_section.course_section_id
     context['user'] = studentObj
     context['message'] = 'Successful retrieval of student\'s team'
-    print(context)
+    #print(context)
     return render(requests,"Module_TeamManagement/Student/studentTeam.html",context)
 
 
@@ -752,7 +752,6 @@ def configureDB_clt(requests):
         action = requests.POST.get("action")
         bootstrapFile = {}
         cleToolName = requests.POST.get("type")
-        print(cleToolName)
 
         if action == 'batch':
             course = requests.POST.get("course_title")
@@ -857,7 +856,6 @@ def configureDB_telegram(requests):
                     client.sign_in(phone=phone_number, code=login_code)
                 except PhoneNumberUnoccupiedError:
                     client.sign_up(phone=phone_number, code=login_code)
-        print(toolType)
         for course_section in registered_course:
             bootstrap.configureCourseToolsList(course_section.course_section_id,toolType)
 
