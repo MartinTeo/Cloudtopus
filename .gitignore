@@ -8,6 +8,7 @@ Diagrams
 .vscode/launch.json
 .vscode/extensions.json
 .vscode/
+CLE/.vscode/
 
 ### Django ###
 *.log

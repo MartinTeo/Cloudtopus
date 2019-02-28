@@ -1,4 +1,4 @@
 #!/bin/bash
 clear
-cd /home/ec2-user/Django_Application/MayhemFive/CLE
+cd /home/ec2-user/Cloudtopus/CLE
 celery -A CLE beat -l info
